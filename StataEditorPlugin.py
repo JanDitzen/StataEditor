@@ -109,15 +109,6 @@ class StataHelpInternal(sublime_plugin.TextCommand):
 		except:
 			print("Could not retrieve help file")
 
-class StataLocal(sublime_plugin.TextCommand):
-	def run(self,edit):
-		sels = self.view.sel()
-		for sel in sels:
-			word_sel = self.view.word(sel.a)
-			word_str = self.view.substr(word_sel)
-			word_str = "`"+word_str+"'"
-			self.view.replace(edit,word_sel,word_str)
-
 class StataLoad(sublime_plugin.TextCommand):
 	def run(self,edit):
 		sel = self.view.substr(self.view.sel()[0])

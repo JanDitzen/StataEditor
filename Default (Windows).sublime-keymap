@@ -1,35 +1,34 @@
 [
+	// Overrides build command
 	{ "keys": ["ctrl+b"],	"command": "stata_execute",	"args": {"Mode": "do"},	"context":
 		[
 			{ "key": "selector", "operator": "equal", "operand": "source.stata" }
 		]
 	},
-	{ "keys": ["ctrl+r"], "command": "stata_execute", "args": {"Mode": "run"}, "context":
+	// Overrides build (run variant)
+	{ "keys": ["ctrl+shift+b"], "command": "stata_execute", "args": {"Mode": "run"}, "context":
 		[
 			{ "key": "selector", "operator": "equal", "operand": "source.stata" }
 		]
 	},
-	{ "keys": ["ctrl+l"], "command": "stata_local", "context":
+	// Help (default windows keys)
+	{ "keys": ["f1"], "command": "stata_help_internal", "context":
 		[
 			{ "key": "selector", "operator": "equal", "operand": "source.stata" }
 		]
 	},
-	{ "keys": ["ctrl+shift+h"], "command": "stata_help_internal", "context":
+	{ "keys": ["shift+f1"], "command": "stata_help_external", "context":
 		[
 			{ "key": "selector", "operator": "equal", "operand": "source.stata" }
 		]
 	},
-	{ "keys": ["ctrl+shift+n"], "command": "stata_help_external", "context":
-		[
-			{ "key": "selector", "operator": "equal", "operand": "source.stata" }
-		]
-	},
+	// This conflicts with soft-undo but not sure what to replace it with
 	{ "keys": ["ctrl+shift+u"], "command": "stata_load", "context":
 		[
 			{ "key": "selector", "operator": "equal", "operand": "source.stata" }
 		]
 	},
-		// Disable expansion ' -> ''
+	// Disable expansion ' -> ''
 	{ "keys": ["'"], "command": "insert_snippet", "args": {"contents": "'"}, "context":
 		[
 			{ "key": "setting.auto_match_enabled", "operator": "equal", "operand": true },

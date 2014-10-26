@@ -10,10 +10,6 @@
         "args": {"Mode": "run"}
     },
     {
-    	"caption": "Stata: Insert locals",
-    	"command": "stata_local"
-    },
-    {
         "caption": "Stata: Help (external)",
         "command": "stata_help_external"
     },
