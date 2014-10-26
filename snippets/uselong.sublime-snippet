@@ -1,0 +1,8 @@
+<snippet>
+	<content><![CDATA[
+use ${1:VARLIST} using "${2:FILE}", clear
+]]></content>
+	<tabTrigger>uselong</tabTrigger>
+	<scope>source.stata</scope>
+	<description>Load dataset</description>
+</snippet>

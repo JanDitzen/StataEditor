@@ -1,0 +1,8 @@
+<snippet>
+	<content><![CDATA[
+merge 1:1 ${1:KEY} using "${2:FILE}", keep(match) // keepusing() nogen nolabel nonotes
+]]></content>
+	<tabTrigger>merge</tabTrigger>
+	<scope>source.stata</scope>
+	<description>Merge datasets</description>
+</snippet>
