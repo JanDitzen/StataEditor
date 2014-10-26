@@ -1,5 +1,5 @@
 [
-	{ "keys": ["ctrl+d"],	"command": "stata_execute",	"args": {"Mode": "do"},	"context":
+	{ "keys": ["ctrl+b"],	"command": "stata_execute",	"args": {"Mode": "do"},	"context":
 		[
 			{ "key": "selector", "operator": "equal", "operand": "source.stata" }
 		]
