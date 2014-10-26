@@ -71,8 +71,9 @@ class StataExecuteCommand(sublime_plugin.TextCommand):
 		this_file.write(all_text)
 		this_file.close()
 		
-		cwd = get_path()
+		cwd = self.get_path()
 		if cwd: StataAutomate("cd " + cwd)
+		
 		StataAutomate(str(args["Mode"]) + " " + dofile_path)
 
 class StataHelpExternal(sublime_plugin.TextCommand):
