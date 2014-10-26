@@ -9,5 +9,3 @@ You also need to register the Stata Automation type library. Instructions can be
 For additional information on setup and features, see the Readme file.
 
 Known issue: When running code from ST3, a new instance of Stata is opened. If you close ST3, then that instance will also close, though it may take around five minutes before that happens. Note that Stata will not ask you whether you want to save the data but will close without warning. **Therefore, do not use an instance of Stata that has been launched from ST3 after ST3 has been closed, as you would risk loosing your unsaved work.**
-
-(Last update: 25oct2014)
