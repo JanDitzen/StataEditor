@@ -42,7 +42,7 @@ def StataAutomate(stata_command):
 
 class StataExecuteCommand(sublime_plugin.TextCommand):
 	def get_path(self):
-		fn = self.window.active_view().file_name()
+		fn = self.view.window().active_view().file_name()
 		return None if not fn else os.path.split(fn)[0]
 
 	def run(self, edit, **args):
