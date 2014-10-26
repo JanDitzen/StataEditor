@@ -31,6 +31,16 @@ def plugin_loaded():
 # 	else:
 # 		return False
 
+# http://www.stata.com/automation/
+# To get locals and globals:
+# sublime.stata.MacroValue(aGlobal)
+# sublime.stata.MacroValue(_aLocal)
+# Also.. scalar=ScalarType
+# StReturnString("c(current_date)") StReturnType("c(current_date)") StReturnNumeric("c(max_matsize)")
+# UtilGetStMissingValue
+# StVariableName(#) #>=1 <=c(K)
+# VariableType VariableNameArray !
+
 def StataAutomate(stata_command):
 	""" Launch Stata (if needed) and send commands """
 	try:
@@ -39,6 +49,20 @@ def StataAutomate(stata_command):
 		win32api.WinExec(settings.get("stata_path"))
 		sublime.stata = win32com.client.Dispatch ("stata.StataOLEApp")
 		sublime.stata.DoCommandAsync(stata_command)
+
+class StataDtaListCommand(sublime_plugin.TextCommand):
+	def run(self, edit, **args):
+		metadata = self.get_metadata()
+
+	def get_metadata(self):
+		buf = sublime.Region(0, self.view.size())
+		lines = [self.view.substr(line).strip() for line in self.view.split_by_newlines(buf)]
+		lines = [line[2:].strip() for line in lines if line.startswith('*!')]
+		ans = {}
+		for line in lines:
+			key,val = line.split(':', 1)
+			ans[key.strip()] = [cell.strip() for cell in val.split(',')]
+		return ans
 
 class StataExecuteCommand(sublime_plugin.TextCommand):
 	def get_path(self):
