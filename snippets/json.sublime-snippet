@@ -3,7 +3,7 @@
 *! dtapaths: {1}
 *! json: {2}
 ]]></content>
-	<tabTrigger>append</tabTrigger>
+	<tabTrigger>json</tabTrigger>
 	<scope>source.stata</scope>
-	<description>Append datasets</description>
+	<description>DTA autocomplete</description>
 </snippet>
