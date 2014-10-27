@@ -10,6 +10,8 @@ import urllib
 from urllib import request
 import hashlib
 import json
+import random
+import time
 
 settings_file = "StataEditor.sublime-settings"
 
@@ -49,11 +51,32 @@ def StataAutomate(stata_command, sync=False):
 	try:
 		sublime.stata.DoCommand(stata_command) if sync else sublime.stata.DoCommandAsync(stata_command)
 	except:
-		win32api.WinExec(settings.get("stata_path"))
-		sublime.stata = win32com.client.Dispatch ("stata.StataOLEApp")
+		print('starting')
+		launch_stata()
+		print('ended launch')
+		print(dir(sublime.stata))
 		sublime.stata.DoCommand(stata_command) if sync else sublime.stata.DoCommandAsync(stata_command)
-	version = StReturnNumeric("c(stata_version)")
-	print('Stata version:', version)
+
+def launch_stata():
+	win32api.WinExec(settings.get("stata_path"))
+	sublime.stata = win32com.client.Dispatch ("stata.StataOLEApp")
+
+	# Stata takes a while to start and will silently discard commands sent until it finishes starting
+	# Workaround: call a trivial command and see if it was executed (-local- in this case)
+	seed = int(random.random()*1e6) # Any number
+	for i in range(50):
+		sublime.stata.DoCommand('local {} ok'.format(seed))
+		sublime.stata.DoCommand('macro list')
+		rc = sublime.stata.MacroValue('_{}'.format(seed))
+		if rc=='ok':
+			sublime.stata.DoCommand('local {}'.format(seed)) # Empty it
+			sublime.stata.DoCommand('cap cls')
+			print("Stata process started (waited {}ms)".format((1+i)/10))
+			break
+		else:
+			time.sleep(0.1)
+	else:
+		raise IOError('Stata process did not start before timeout')	
 
 class StataDtaAutocompleteCommand(sublime_plugin.TextCommand):
 	def run(self, edit, **args):
