@@ -52,6 +52,8 @@ def StataAutomate(stata_command, sync=False):
 		win32api.WinExec(settings.get("stata_path"))
 		sublime.stata = win32com.client.Dispatch ("stata.StataOLEApp")
 		sublime.stata.DoCommand(stata_command) if sync else sublime.stata.DoCommandAsync(stata_command)
+	version = StReturnNumeric("c(stata_version)")
+	print('Stata version:', version)
 
 class StataDtaAutocompleteCommand(sublime_plugin.TextCommand):
 	def run(self, edit, **args):
@@ -107,7 +109,7 @@ class StataDtaAutocompleteCommand(sublime_plugin.TextCommand):
 		return data
 
 	def get_vars(self, fn):
-		cmd = """use "{}" in 1, clear nolabel"""
+		cmd = """use "{}" in 1 if 0, clear nolabel"""
 		StataAutomate(cmd.format(fn), sync=True)
 		vars = sublime.stata.VariableNameArray()
 		print(fn, vars)
