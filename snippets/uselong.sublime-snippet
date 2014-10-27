@@ -1,6 +1,6 @@
 <snippet>
 	<content><![CDATA[
-use ${1:VARLIST} using "${2:FILE}", clear
+use ${1:VARLIST} using ${2}, clear
 ]]></content>
 	<tabTrigger>uselong</tabTrigger>
 	<scope>source.stata</scope>

@@ -1,5 +1,6 @@
 Stata Editor for Sublime Text 3
 ===============================
+(This is a WiP clone of the work by Mattias Nordin, intended for personal use)
 
 by [Mattias Nordin](http://sites.google.com/site/econnordin/)
 

@@ -1,6 +1,6 @@
 <snippet>
 	<content><![CDATA[
-use "${1:FILE}", clear
+use ${1}, clear
 ]]></content>
 	<tabTrigger>use</tabTrigger>
 	<scope>source.stata</scope>
