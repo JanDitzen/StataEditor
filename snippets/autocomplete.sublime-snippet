@@ -3,7 +3,7 @@
 *! dtapaths: ${1}
 *! json: ${2}
 ]]></content>
-	<tabTrigger>json</tabTrigger>
+	<tabTrigger>autocomplete</tabTrigger>
 	<scope>source.stata</scope>
 	<description>DTA autocomplete</description>
 </snippet>

@@ -1,4 +1,11 @@
 [
+	// Override autocomplete when dealing with DTAs
+	{ "keys": ["ctrl+space"], "command": "stata_autocomplete_dta", "context":
+		[
+			{ "key": "preceding_text", "operator": "regex_contains", "operand": "(use|using)[ \t]+" },
+			{ "key": "setting.tab_completion", "operator": "equal", "operand": true }
+		]
+	},
 	// Overrides build command
 	{ "keys": ["ctrl+b"],	"command": "stata_execute",	"args": {"Mode": "do"},	"context":
 		[

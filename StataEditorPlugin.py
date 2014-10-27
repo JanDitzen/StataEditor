@@ -77,22 +77,92 @@ def launch_stata():
 	else:
 		raise IOError('Stata process did not start before timeout')	
 
-class GoogleAutocomplete(sublime_plugin.EventListener):
-	def XXon_query_completions(self, view, prefix, locations):
-		sugs = [('aa\tDesc','aaa'),('b','bBBbB')]
-		sublime.status_message(prefix)
-		print(prefix)
-		return sugs
-
 # Cambiar el completion por un quick panel show_quick_panel 
 # https://gist.github.com/robmccormack/6040840
 # http://stackoverflow.com/questions/12976008/accessing-the-quick-panel-in-a-sublime-text-2-plugin
 # En el caso de variables, escoger el dta, y luego escoger variables anhadiendo espacio hasta que aprete escape..
 # Hacer override de: { "keys": ["ctrl+shift+space"], "command": "expand_selection", "args": {"to": "scope"} },
 # self.window.show_quick_panel([[cmd["title"], cmd["command"]] for cmd in self._commands] + [["<New>", "Create a new command"]],
-                                     self._on_select_command_done)
+#self._on_select_command_done)
 
-class StataDtaAutocompleteCommand(sublime_plugin.EventListener):
+def get_cwd(view):
+	fn = view.file_name()
+	if not fn: return
+	cwd = os.path.split(fn)[0]
+	return cwd
+
+def read_json(self, fn):
+	if not fn or not os.path.isfile(fn): return []
+	with open(fn) as fh:
+		d = json.load(fh)
+		return d
+
+def get_metadata(view):
+	buf = sublime.Region(0, view.size())
+	lines = [view.substr(line).strip() for line in view.split_by_newlines(buf)]
+	lines = [line[2:].strip() for line in lines if line.startswith('*!')]
+	ans = {}
+	for line in lines:
+		key,val = line.split(':', 1)
+		ans[key.strip()] = [cell.strip() for cell in val.split(',')]
+	return ans
+
+def get_saves(view):
+	buf = sublime.Region(0, view.size())
+	pat = '''^[ \t]*save[ \t]+"?([a-zA-Z0-9_`'.~ /:\\-]+)"?'''
+	source = view.substr(buf)
+	regex = re.findall(pat, source, re.MULTILINE)
+	ans = [('',fn) for fn in regex]
+	return ans
+
+def get_dta_in_path(path):
+	nick = ''
+	if '=' in path:
+		nick, path = path.split('=', 1)
+	if not os.path.isdir(path): return []
+	# full file path, file name used in stata ($; no .dta)
+	ans = [fn for fn in os.listdir(path) if fn.endswith('.dta')]
+	ans = [ (os.path.join(path,fn), (nick if nick else path) + '/' + fn[:-4]) for fn in ans]
+	return ans
+
+def prepare_dta_suggestion(dta):
+	desc = 'temp' if r"`" in dta[1] else 'dta'
+	return dta[1]
+	#return '[{}]: {}'.format(desc, dta[1])
+
+def get_dta_suggestions(view):
+	metadata = get_metadata(view)
+	paths = metadata.get('dtapaths', [])
+	datasets = get_saves(view)
+	for path in paths:
+		datasets.extend(get_dta_in_path(path))
+	datasets = tuple(set(datasets))
+	print(datasets)
+	return datasets, [prepare_dta_suggestion(dta) for dta in set(datasets)]
+	#hashvalue = hash(datasets) # bugbug.. only use nontemp for that
+
+class StataAutocompleteDtaCommand(sublime_plugin.TextCommand):
+	def run(self, edit):
+		self.datasets, self.suggestions = get_dta_suggestions(self.view)
+		print(self.suggestions)
+		self.view.window().show_quick_panel(self.suggestions, self.insert_link) #, sublime.MONOSPACE_FONT)
+
+	def insert_link(self, choice):
+		if choice==-1:
+			return
+		link = '"' + self.datasets[choice][1] + '"'
+		self.view.run_command("stata_insert", {'link':link})
+		#edit = self.view.begin_edit()
+		#startloc = self.view.sel()[-1].end()
+		#self.view.insert(self.edit, startloc, link)
+		#self.view.end_edit(edit)
+
+class StataInsert(sublime_plugin.TextCommand):
+	def run(self, edit, link):
+		startloc = self.view.sel()[-1].end()
+		self.view.insert(edit, startloc, link)
+
+class AsdCommand(sublime_plugin.EventListener):
 	def on_query_completions(self, view, prefix, locations):
 		point = locations[0]
 		if not view.match_selector(point, "source.stata"):
@@ -113,9 +183,9 @@ class StataDtaAutocompleteCommand(sublime_plugin.EventListener):
 			# For some reason ST fails with unusual characters
 			key = dta[2].replace("`", "")
 			if key.endswith('.dta'): key = key[:-4]
-			key = key.replace("'", "").replace(".", "_").replace("/", "|")
-			key = key.replace(":", "").replace("\\", "|").replace("$", "|")
-			if len(key) > 15: key = "_" + key[-14:]
+			key = key.replace("'", "") # .replace(".", "_").replace("/", "|")
+			#key = key.replace(":", "").replace("\\", "|").replace("$", "|")
+			#if len(key) > 15: key = "_" + key[-14:]
 			val = '"' + dta[2].replace('$', '\$') + '" '
 			return [key + '\t' + desc, val]
 
@@ -143,65 +213,32 @@ class StataDtaAutocompleteCommand(sublime_plugin.EventListener):
 				print('JSON file updated') # , old_hashvalue,hashvalue)
 				data = self.save_json(json_fn, datasets, hashvalue) # Save and update data dict
 		# print('Suggestions loaded!')
-		dta_sug = [dta_suggestion(dta) for dta in data['datasets']]
+		
 		var_sug = data['vars'] # BUGBUG
 		return dta_sug, var_sug
 
-	def get_cwd(self, view):
-		fn = view.file_name()
-		if not fn: return
-		cwd = os.path.split(fn)[0]
-		return cwd
-
-	def read_json(self, fn):
-		if not fn or not os.path.isfile(fn): return []
-		with open(fn) as fh:
-			d = json.load(fh)
-			return d
-
 	def save_json(self, fn, datasets, hashvalue):
 		data = {'datasets':datasets, 'hashvalue':hashvalue}
-		vars = {}
+		variables = {}
 		for dta in datasets:
 			if dta[0]:
-				vars[dta[2]] = self.get_vars(os.path.join(dta[0],dta[1]))
-		data['vars'] = vars
+				variables[dta[2]] = self.get_vars(os.path.join(dta[0],dta[1]))
+		data['vars'] = variables
 		with open(fn,'w') as fh:
 			json.dump(data, fh, indent="\t")
 		return data
 
 	def get_vars(self, fn):
-		cmd = """use "{}" in 1 if 0, clear nolabel"""
+		# "use in 1" is too slow; just do "desc, varlist" 
+		#cmd = """use "{}" in 1, clear nolabel""" 
+		cmd = "describe using {}, varlist"
 		StataAutomate(cmd.format(fn), sync=True)
-		vars = sublime.stata.VariableNameArray()
+		varlist = sublime.stata.MacroValue("r(varlist)")
+		#sortlist = sublime.stata.MacroValue("r(sortlist)")
+		print(varlist)
+		#vars = sublime.stata.VariableNameArray()
 		#print(fn, vars)
-		return vars
-
-	def get_saves(self, view):
-		buf = sublime.Region(0, view.size())
-		pat = '''^[ \t]*save[ \t]+"?([a-zA-Z0-9_`'.~ /:\\-]+)"?'''
-		source = view.substr(buf)
-		regex = re.findall(pat, source, re.MULTILINE)
-		ans = [('',fn,fn) for fn in regex]
-		return ans
-
-	def get_metadata(self, view):
-		buf = sublime.Region(0, view.size())
-		lines = [view.substr(line).strip() for line in view.split_by_newlines(buf)]
-		lines = [line[2:].strip() for line in lines if line.startswith('*!')]
-		ans = {}
-		for line in lines:
-			key,val = line.split(':', 1)
-			ans[key.strip()] = [cell.strip() for cell in val.split(',')]
-		return ans
-
-	def get_dta_in_path(self, path):
-		nick = ''
-		if '=' in path:
-			nick, path = path.split('=', 1)
-		if not os.path.isdir(path): return []
-		ans = [(path,fn, (nick if nick else path) + '/' + fn) for fn in os.listdir(path) if fn.endswith('.dta')]
-		return ans
+		return varlist.split(' ')
 
 class StataExecuteCommand(sublime_plugin.TextCommand):
 	def get_path(self):
