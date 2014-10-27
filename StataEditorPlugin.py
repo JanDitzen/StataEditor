@@ -2,6 +2,8 @@ import sublime, sublime_plugin
 import os
 import Pywin32.setup
 import win32com.client
+import win32con
+# http://msdn.microsoft.com/en-us/library/windows/desktop/ms633548(v=vs.85).aspx
 import win32api
 import tempfile
 import subprocess
@@ -16,8 +18,8 @@ import time
 settings_file = "StataEditor.sublime-settings"
 
 def plugin_loaded():
-    global settings
-    settings = sublime.load_settings(settings_file)
+	global settings
+	settings = sublime.load_settings(settings_file)
 
 # def StataRunning():
 # 	""" Check if Stata is running """
@@ -51,14 +53,11 @@ def StataAutomate(stata_command, sync=False):
 	try:
 		sublime.stata.DoCommand(stata_command) if sync else sublime.stata.DoCommandAsync(stata_command)
 	except:
-		print('starting')
 		launch_stata()
-		print('ended launch')
-		print(dir(sublime.stata))
 		sublime.stata.DoCommand(stata_command) if sync else sublime.stata.DoCommandAsync(stata_command)
 
 def launch_stata():
-	win32api.WinExec(settings.get("stata_path"))
+	win32api.WinExec(settings.get("stata_path"), win32con.SW_SHOWMINNOACTIVE)
 	sublime.stata = win32com.client.Dispatch ("stata.StataOLEApp")
 
 	# Stata takes a while to start and will silently discard commands sent until it finishes starting
@@ -78,17 +77,57 @@ def launch_stata():
 	else:
 		raise IOError('Stata process did not start before timeout')	
 
-class StataDtaAutocompleteCommand(sublime_plugin.TextCommand):
-	def run(self, edit, **args):
-		metadata = self.get_metadata()
+class GoogleAutocomplete(sublime_plugin.EventListener):
+	def XXon_query_completions(self, view, prefix, locations):
+		sugs = [('aa\tDesc','aaa'),('b','bBBbB')]
+		sublime.status_message(prefix)
+		print(prefix)
+		return sugs
+
+# Cambiar el completion por un quick panel show_quick_panel 
+# https://gist.github.com/robmccormack/6040840
+# http://stackoverflow.com/questions/12976008/accessing-the-quick-panel-in-a-sublime-text-2-plugin
+# En el caso de variables, escoger el dta, y luego escoger variables anhadiendo espacio hasta que aprete escape..
+# Hacer override de: { "keys": ["ctrl+shift+space"], "command": "expand_selection", "args": {"to": "scope"} },
+# self.window.show_quick_panel([[cmd["title"], cmd["command"]] for cmd in self._commands] + [["<New>", "Create a new command"]],
+                                     self._on_select_command_done)
+
+class StataDtaAutocompleteCommand(sublime_plugin.EventListener):
+	def on_query_completions(self, view, prefix, locations):
+		point = locations[0]
+		if not view.match_selector(point, "source.stata"):
+			return []
+		line = view.substr(sublime.Region(view.line(point).a, point)) # Line up to cursor
+		if prefix: line = line[:len(line)-len(prefix)]
+		line = line.replace('"', '').strip()
+		
+		if line.endswith('use') or line.endswith('using'):
+			print('ok', line)
+			dta_sugs, var_sugs = self.get_suggestions(view)
+			return dta_sugs
+
+	def get_suggestions(self, view):
+
+		def dta_suggestion(dta):
+			desc = 'temp' if r"`" in dta[2] else 'dta'
+			# For some reason ST fails with unusual characters
+			key = dta[2].replace("`", "")
+			if key.endswith('.dta'): key = key[:-4]
+			key = key.replace("'", "").replace(".", "_").replace("/", "|")
+			key = key.replace(":", "").replace("\\", "|").replace("$", "|")
+			if len(key) > 15: key = "_" + key[-14:]
+			val = '"' + dta[2].replace('$', '\$') + '" '
+			return [key + '\t' + desc, val]
+
+		metadata = self.get_metadata(view)
 		paths = metadata.get('dtapaths', [])
-		datasets = self.get_saves()
+		datasets = self.get_saves(view)
 		for path in paths:
 			datasets.extend(self.get_dta_in_path(path))
 		datasets = tuple(set(datasets))
 		hashvalue = hash(datasets)
 
-		cwd = self.get_cwd()
+		cwd = self.get_cwd(view)
 		json_fn = metadata.get('json', [''])[0]
 		json_fn = os.path.join(cwd, json_fn) if cwd and json_fn else ''
 
@@ -99,17 +138,17 @@ class StataDtaAutocompleteCommand(sublime_plugin.TextCommand):
 		if json_fn:
 			data = self.read_json(json_fn) # Read old json
 			old_hashvalue = data['hashvalue'] if data else None # If old json is stale, refresh
-			if old_hashvalue!=hashvalue or True: # Bugbug
+			if old_hashvalue!=hashvalue: # Bugbug
 				#sublime.error_message(str([old_hashvalue,hashvalue]))
-				print('JSON file updated', old_hashvalue,hashvalue)
+				print('JSON file updated') # , old_hashvalue,hashvalue)
 				data = self.save_json(json_fn, datasets, hashvalue) # Save and update data dict
-		#sublime.error_message(json_fn)
-		#sublime.error_message(str(datasets))
-		# What do i do with -data- now??
-		print('Done!')
+		# print('Suggestions loaded!')
+		dta_sug = [dta_suggestion(dta) for dta in data['datasets']]
+		var_sug = data['vars'] # BUGBUG
+		return dta_sug, var_sug
 
-	def get_cwd(self):
-		fn = self.view.window().active_view().file_name()
+	def get_cwd(self, view):
+		fn = view.file_name()
 		if not fn: return
 		cwd = os.path.split(fn)[0]
 		return cwd
@@ -135,20 +174,20 @@ class StataDtaAutocompleteCommand(sublime_plugin.TextCommand):
 		cmd = """use "{}" in 1 if 0, clear nolabel"""
 		StataAutomate(cmd.format(fn), sync=True)
 		vars = sublime.stata.VariableNameArray()
-		print(fn, vars)
+		#print(fn, vars)
 		return vars
 
-	def get_saves(self):
-		buf = sublime.Region(0, self.view.size())
+	def get_saves(self, view):
+		buf = sublime.Region(0, view.size())
 		pat = '''^[ \t]*save[ \t]+"?([a-zA-Z0-9_`'.~ /:\\-]+)"?'''
-		source = self.view.substr(buf)
+		source = view.substr(buf)
 		regex = re.findall(pat, source, re.MULTILINE)
 		ans = [('',fn,fn) for fn in regex]
 		return ans
 
-	def get_metadata(self):
-		buf = sublime.Region(0, self.view.size())
-		lines = [self.view.substr(line).strip() for line in self.view.split_by_newlines(buf)]
+	def get_metadata(self, view):
+		buf = sublime.Region(0, view.size())
+		lines = [view.substr(line).strip() for line in view.split_by_newlines(buf)]
 		lines = [line[2:].strip() for line in lines if line.startswith('*!')]
 		ans = {}
 		for line in lines:
