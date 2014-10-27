@@ -1,0 +1,9 @@
+<snippet>
+	<content><![CDATA[
+*! dtapaths: {1}
+*! json: {2}
+]]></content>
+	<tabTrigger>append</tabTrigger>
+	<scope>source.stata</scope>
+	<description>Append datasets</description>
+</snippet>
