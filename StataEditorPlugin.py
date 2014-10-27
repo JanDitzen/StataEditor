@@ -8,6 +8,8 @@ import subprocess
 import re
 import urllib
 from urllib import request
+import hashlib
+import json
 
 settings_file = "StataEditor.sublime-settings"
 
@@ -41,18 +43,83 @@ def plugin_loaded():
 # StVariableName(#) #>=1 <=c(K)
 # VariableType VariableNameArray !
 
-def StataAutomate(stata_command):
+def StataAutomate(stata_command, sync=False):
 	""" Launch Stata (if needed) and send commands """
+	# method = sublime.stata.DoCommand if sync else sublime.stata.DoCommandAsync
 	try:
-		sublime.stata.DoCommandAsync(stata_command)
+		sublime.stata.DoCommand(stata_command) if sync else sublime.stata.DoCommandAsync(stata_command)
 	except:
 		win32api.WinExec(settings.get("stata_path"))
 		sublime.stata = win32com.client.Dispatch ("stata.StataOLEApp")
-		sublime.stata.DoCommandAsync(stata_command)
+		sublime.stata.DoCommand(stata_command) if sync else sublime.stata.DoCommandAsync(stata_command)
 
-class StataDtaListCommand(sublime_plugin.TextCommand):
+class StataDtaAutocompleteCommand(sublime_plugin.TextCommand):
 	def run(self, edit, **args):
 		metadata = self.get_metadata()
+		paths = metadata.get('dtapaths', [])
+		datasets = self.get_saves()
+		for path in paths:
+			datasets.extend(self.get_dta_in_path(path))
+		datasets = tuple(set(datasets))
+		hashvalue = hash(datasets)
+
+		cwd = self.get_cwd()
+		json_fn = metadata.get('json', [''])[0]
+		json_fn = os.path.join(cwd, json_fn) if cwd and json_fn else ''
+
+		# If there is a json name specified,
+		# And the list of dtas is different, update the variables
+		# BUGBUG: What if the names don't change but the contents do? In that case, delete the .json
+
+		if json_fn:
+			data = self.read_json(json_fn) # Read old json
+			old_hashvalue = data['hashvalue'] if data else None # If old json is stale, refresh
+			if old_hashvalue!=hashvalue or True: # Bugbug
+				#sublime.error_message(str([old_hashvalue,hashvalue]))
+				print('JSON file updated', old_hashvalue,hashvalue)
+				data = self.save_json(json_fn, datasets, hashvalue) # Save and update data dict
+		#sublime.error_message(json_fn)
+		#sublime.error_message(str(datasets))
+		# What do i do with -data- now??
+		print('Done!')
+
+	def get_cwd(self):
+		fn = self.view.window().active_view().file_name()
+		if not fn: return
+		cwd = os.path.split(fn)[0]
+		return cwd
+
+	def read_json(self, fn):
+		if not fn or not os.path.isfile(fn): return []
+		with open(fn) as fh:
+			d = json.load(fh)
+			return d
+
+	def save_json(self, fn, datasets, hashvalue):
+		data = {'datasets':datasets, 'hashvalue':hashvalue}
+		vars = {}
+		for dta in datasets:
+			if dta[0]:
+				vars[dta[2]] = self.get_vars(os.path.join(dta[0],dta[1]))
+		data['vars'] = vars
+		with open(fn,'w') as fh:
+			json.dump(data, fh, indent="\t")
+		return data
+
+	def get_vars(self, fn):
+		cmd = """use "{}" in 1, clear nolabel"""
+		StataAutomate(cmd.format(fn), sync=True)
+		vars = sublime.stata.VariableNameArray()
+		print(fn, vars)
+		return vars
+
+	def get_saves(self):
+		buf = sublime.Region(0, self.view.size())
+		pat = '''^[ \t]*save[ \t]+"?([a-zA-Z0-9_`'.~ /:\\-]+)"?'''
+		source = self.view.substr(buf)
+		regex = re.findall(pat, source, re.MULTILINE)
+		ans = [('',fn,fn) for fn in regex]
+		return ans
 
 	def get_metadata(self):
 		buf = sublime.Region(0, self.view.size())
@@ -62,6 +129,14 @@ class StataDtaListCommand(sublime_plugin.TextCommand):
 		for line in lines:
 			key,val = line.split(':', 1)
 			ans[key.strip()] = [cell.strip() for cell in val.split(',')]
+		return ans
+
+	def get_dta_in_path(self, path):
+		nick = ''
+		if '=' in path:
+			nick, path = path.split('=', 1)
+		if not os.path.isdir(path): return []
+		ans = [(path,fn, (nick if nick else path) + '/' + fn) for fn in os.listdir(path) if fn.endswith('.dta')]
 		return ans
 
 class StataExecuteCommand(sublime_plugin.TextCommand):
