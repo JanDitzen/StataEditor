@@ -13,7 +13,7 @@ from urllib import request
 import hashlib
 import json
 import random
-import time
+import time, calendar
 
 settings_file = "StataEditor.sublime-settings"
 
@@ -91,8 +91,8 @@ def get_cwd(view):
 	cwd = os.path.split(fn)[0]
 	return cwd
 
-def read_json(self, fn):
-	if not fn or not os.path.isfile(fn): return []
+def read_json(fn):
+	if not fn or not os.path.isfile(fn): return None
 	with open(fn) as fh:
 		d = json.load(fh)
 		return d
@@ -126,7 +126,7 @@ def get_dta_in_path(path):
 	return ans
 
 def prepare_dta_suggestion(dta):
-	desc = 'temp' if r"`" in dta[1] else 'dta'
+	#desc = 'temp' if r"`" in dta[1] else 'dta'
 	return dta[1]
 	#return '[{}]: {}'.format(desc, dta[1])
 
@@ -137,14 +137,62 @@ def get_dta_suggestions(view):
 	for path in paths:
 		datasets.extend(get_dta_in_path(path))
 	datasets = tuple(set(datasets))
-	print(datasets)
-	return datasets, [prepare_dta_suggestion(dta) for dta in set(datasets)]
-	#hashvalue = hash(datasets) # bugbug.. only use nontemp for that
+	return datasets, [prepare_dta_suggestion(dta) for dta in datasets]
+
+def get_var_suggestions(view):
+	metadata = get_metadata(view)
+	paths = metadata.get('dtapaths', [])
+	# Don't use get_dta_suggestions b/c I don't want suggestions from -save-
+	datasets = []
+	for path in paths:
+		datasets.extend(get_dta_in_path(path))
+	datasets = tuple(set(datasets))
+	dta_files = tuple(dta[0] for dta in datasets)
+	dta_stata = tuple(dta[1] for dta in datasets)
+	hashvalue = hash(dta_files)
+
+	cwd = get_cwd(view)
+	json_fn = metadata.get('json', [''])[0]
+	json_fn = os.path.join(cwd, json_fn) if cwd and json_fn else ''
+
+	if json_fn:
+		data = read_json(json_fn) # Read old json
+		if data is None: data = {'modified': 0}
+		#old_hashvalue = data['hashvalue'] if data else None # If old json is stale, refresh
+		#if old_hashvalue!=hashvalue:
+		if max(os.path.getmtime(fn) for fn in dta_files) > data['modified']:
+			data = save_json(json_fn, datasets, hashvalue) # Save and update data dict
+			print('JSON file updated')
+		return zip(*data['vars']) # obtain dta, suggestion pairs and transform into 2 lists
+	else:
+		return [],[]
+
+def save_json(json_fn, datasets, hashvalue):
+	modified = calendar.timegm(time.gmtime())
+	data = {'hashvalue':hashvalue, 'modified':modified}
+	variables = []
+	for fn, dta in datasets:
+		varnames = get_vars(fn)
+		variables.extend( (var, '[{}]: {}'.format(dta, var)) for var in varnames)
+	data['vars'] = variables
+	with open(json_fn,'w') as fh:
+		json.dump(data, fh, indent="\t")
+	return data
+
+def get_vars(fn):
+	# "use in 1" is too slow; just do "desc, varlist" 
+	#cmd = """use "{}" in 1, clear nolabel""" 
+	cmd = "describe using {}, varlist"
+	print(cmd.format(fn))
+	StataAutomate(cmd.format(fn), sync=True)
+	varlist = sublime.stata.StReturnString("r(varlist)")
+	#sortlist = sublime.stata.StReturnString("r(sortlist)")
+	#vars = sublime.stata.VariableNameArray()
+	return varlist.split(' ')
 
 class StataAutocompleteDtaCommand(sublime_plugin.TextCommand):
 	def run(self, edit):
 		self.datasets, self.suggestions = get_dta_suggestions(self.view)
-		print(self.suggestions)
 		self.view.window().show_quick_panel(self.suggestions, self.insert_link) #, sublime.MONOSPACE_FONT)
 
 	def insert_link(self, choice):
@@ -152,93 +200,25 @@ class StataAutocompleteDtaCommand(sublime_plugin.TextCommand):
 			return
 		link = '"' + self.datasets[choice][1] + '"'
 		self.view.run_command("stata_insert", {'link':link})
-		#edit = self.view.begin_edit()
-		#startloc = self.view.sel()[-1].end()
-		#self.view.insert(self.edit, startloc, link)
-		#self.view.end_edit(edit)
+
+class StataAutocompleteVarCommand(sublime_plugin.TextCommand):
+	def run(self, edit):
+		self.varlist, self.suggestions = get_var_suggestions(self.view)
+		if self.varlist:
+			self.view.window().show_quick_panel(self.suggestions, self.insert_link) #, sublime.MONOSPACE_FONT)
+
+	def insert_link(self, choice):
+		if choice==-1:
+			return
+		link = self.varlist[choice] + ' '
+		self.view.run_command("stata_insert", {'link':link})
+		# Call again except if ESC is pressed
+		sublime.set_timeout(lambda: self.view.run_command("stata_autocomplete_var"), 1)
 
 class StataInsert(sublime_plugin.TextCommand):
 	def run(self, edit, link):
 		startloc = self.view.sel()[-1].end()
 		self.view.insert(edit, startloc, link)
-
-class AsdCommand(sublime_plugin.EventListener):
-	def on_query_completions(self, view, prefix, locations):
-		point = locations[0]
-		if not view.match_selector(point, "source.stata"):
-			return []
-		line = view.substr(sublime.Region(view.line(point).a, point)) # Line up to cursor
-		if prefix: line = line[:len(line)-len(prefix)]
-		line = line.replace('"', '').strip()
-		
-		if line.endswith('use') or line.endswith('using'):
-			print('ok', line)
-			dta_sugs, var_sugs = self.get_suggestions(view)
-			return dta_sugs
-
-	def get_suggestions(self, view):
-
-		def dta_suggestion(dta):
-			desc = 'temp' if r"`" in dta[2] else 'dta'
-			# For some reason ST fails with unusual characters
-			key = dta[2].replace("`", "")
-			if key.endswith('.dta'): key = key[:-4]
-			key = key.replace("'", "") # .replace(".", "_").replace("/", "|")
-			#key = key.replace(":", "").replace("\\", "|").replace("$", "|")
-			#if len(key) > 15: key = "_" + key[-14:]
-			val = '"' + dta[2].replace('$', '\$') + '" '
-			return [key + '\t' + desc, val]
-
-		metadata = self.get_metadata(view)
-		paths = metadata.get('dtapaths', [])
-		datasets = self.get_saves(view)
-		for path in paths:
-			datasets.extend(self.get_dta_in_path(path))
-		datasets = tuple(set(datasets))
-		hashvalue = hash(datasets)
-
-		cwd = self.get_cwd(view)
-		json_fn = metadata.get('json', [''])[0]
-		json_fn = os.path.join(cwd, json_fn) if cwd and json_fn else ''
-
-		# If there is a json name specified,
-		# And the list of dtas is different, update the variables
-		# BUGBUG: What if the names don't change but the contents do? In that case, delete the .json
-
-		if json_fn:
-			data = self.read_json(json_fn) # Read old json
-			old_hashvalue = data['hashvalue'] if data else None # If old json is stale, refresh
-			if old_hashvalue!=hashvalue: # Bugbug
-				#sublime.error_message(str([old_hashvalue,hashvalue]))
-				print('JSON file updated') # , old_hashvalue,hashvalue)
-				data = self.save_json(json_fn, datasets, hashvalue) # Save and update data dict
-		# print('Suggestions loaded!')
-		
-		var_sug = data['vars'] # BUGBUG
-		return dta_sug, var_sug
-
-	def save_json(self, fn, datasets, hashvalue):
-		data = {'datasets':datasets, 'hashvalue':hashvalue}
-		variables = {}
-		for dta in datasets:
-			if dta[0]:
-				variables[dta[2]] = self.get_vars(os.path.join(dta[0],dta[1]))
-		data['vars'] = variables
-		with open(fn,'w') as fh:
-			json.dump(data, fh, indent="\t")
-		return data
-
-	def get_vars(self, fn):
-		# "use in 1" is too slow; just do "desc, varlist" 
-		#cmd = """use "{}" in 1, clear nolabel""" 
-		cmd = "describe using {}, varlist"
-		StataAutomate(cmd.format(fn), sync=True)
-		varlist = sublime.stata.MacroValue("r(varlist)")
-		#sortlist = sublime.stata.MacroValue("r(sortlist)")
-		print(varlist)
-		#vars = sublime.stata.VariableNameArray()
-		#print(fn, vars)
-		return varlist.split(' ')
 
 class StataExecuteCommand(sublime_plugin.TextCommand):
 	def get_path(self):
