@@ -41,7 +41,7 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>\`\w{1,31}'|`\w*`\w*'\w*'</string>
+			<string>(`\w{1,31}'|`\w*`\w*'\w*')</string>
 			<key>name</key>
 			<string>variable.parameter.local.stata</string>
 		</dict>
