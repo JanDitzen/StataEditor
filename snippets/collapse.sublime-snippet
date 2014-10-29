@@ -1,8 +1,8 @@
 <snippet>
 	<content><![CDATA[
-reshape ${1:long} $2 , i($3) j($4)
+collapse (${1:mean}) $2 , by($3) fast
 ]]></content>
-	<tabTrigger>reshape</tabTrigger>
+	<tabTrigger>collapse</tabTrigger>
 	<scope>source.stata</scope>
-	<description>Reshape wide/long</description>
+	<description>Collapse</description>
 </snippet>
