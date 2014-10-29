@@ -1,219 +1,96 @@
+# -------------------------------------------------------------
+# Imports and Constants
+# -------------------------------------------------------------
 import sublime, sublime_plugin
-import os
-import Pywin32.setup
-import win32com.client
-import win32con
+import Pywin32.setup, win32com.client, win32con, win32api
+import os, tempfile, subprocess, re, urllib, json, random, time, calendar
+from collections import defaultdict
 # http://msdn.microsoft.com/en-us/library/windows/desktop/ms633548(v=vs.85).aspx
-import win32api
-import tempfile
-import subprocess
-import re
-import urllib
-from urllib import request
-import hashlib
-import json
-import random
-import time, calendar
 
 settings_file = "StataEditor.sublime-settings"
+stata_debug = True
 
-def plugin_loaded():
-	global settings
-	settings = sublime.load_settings(settings_file)
+# -------------------------------------------------------------
+# Classes
+# -------------------------------------------------------------
 
-# def StataRunning():
-# 	""" Check if Stata is running """
-# 	cmd = "WMIC PROCESS get Caption"
-# 	proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-
-# 	all_run_prog = ""
-# 	for line in proc.stdout:
-# 		all_run_prog = all_run_prog + str(line) + "\n"
-
-# 	prog_run = re.findall('Stata.*?\.exe', all_run_prog)
-
-# 	if len(prog_run) > 0:
-# 		return True
-# 	else:
-# 		return False
-
-# http://www.stata.com/automation/
-# To get locals and globals:
-# sublime.stata.MacroValue(aGlobal)
-# sublime.stata.MacroValue(_aLocal)
-# Also.. scalar=ScalarType
-# StReturnString("c(current_date)") StReturnType("c(current_date)") StReturnNumeric("c(max_matsize)")
-# UtilGetStMissingValue
-# StVariableName(#) #>=1 <=c(K)
-# VariableType VariableNameArray !
-
-def StataAutomate(stata_command, sync=False):
-	""" Launch Stata (if needed) and send commands """
-	# method = sublime.stata.DoCommand if sync else sublime.stata.DoCommandAsync
-	try:
-		sublime.stata.DoCommand(stata_command) if sync else sublime.stata.DoCommandAsync(stata_command)
-	except:
-		launch_stata()
-		sublime.stata.DoCommand(stata_command) if sync else sublime.stata.DoCommandAsync(stata_command)
-
-def launch_stata():
-	win32api.WinExec(settings.get("stata_path"), win32con.SW_SHOWMINNOACTIVE)
-	sublime.stata = win32com.client.Dispatch ("stata.StataOLEApp")
-
-	# Stata takes a while to start and will silently discard commands sent until it finishes starting
-	# Workaround: call a trivial command and see if it was executed (-local- in this case)
-	seed = int(random.random()*1e6) # Any number
-	for i in range(50):
-		sublime.stata.DoCommand('local {} ok'.format(seed))
-		sublime.stata.DoCommand('macro list')
-		rc = sublime.stata.MacroValue('_{}'.format(seed))
-		if rc=='ok':
-			sublime.stata.DoCommand('local {}'.format(seed)) # Empty it
-			sublime.stata.DoCommand('cap cls')
-			print("Stata process started (waited {}ms)".format((1+i)/10))
-			break
-		else:
-			time.sleep(0.1)
-	else:
-		raise IOError('Stata process did not start before timeout')	
-
-# Cambiar el completion por un quick panel show_quick_panel 
-# https://gist.github.com/robmccormack/6040840
-# http://stackoverflow.com/questions/12976008/accessing-the-quick-panel-in-a-sublime-text-2-plugin
-# En el caso de variables, escoger el dta, y luego escoger variables anhadiendo espacio hasta que aprete escape..
-# Hacer override de: { "keys": ["ctrl+shift+space"], "command": "expand_selection", "args": {"to": "scope"} },
-# self.window.show_quick_panel([[cmd["title"], cmd["command"]] for cmd in self._commands] + [["<New>", "Create a new command"]],
-#self._on_select_command_done)
-
-def get_cwd(view):
-	fn = view.file_name()
-	if not fn: return
-	cwd = os.path.split(fn)[0]
-	return cwd
-
-def read_json(fn):
-	if not fn or not os.path.isfile(fn): return None
-	with open(fn) as fh:
-		d = json.load(fh)
-		return d
-
-def get_metadata(view):
-	buf = sublime.Region(0, view.size())
-	lines = [view.substr(line).strip() for line in view.split_by_newlines(buf)]
-	lines = [line[2:].strip() for line in lines if line.startswith('*!')]
-	ans = {}
-	for line in lines:
-		key,val = line.split(':', 1)
-		ans[key.strip()] = [cell.strip() for cell in val.split(',')]
-	return ans
-
-def get_saves(view):
-	buf = sublime.Region(0, view.size())
-	pat = '''^[ \t]*save[ \t]+"?([a-zA-Z0-9_`'.~ /:\\-]+)"?'''
-	source = view.substr(buf)
-	regex = re.findall(pat, source, re.MULTILINE)
-	ans = [('',fn) for fn in regex]
-	return ans
-
-def get_dta_in_path(path):
-	nick = ''
-	if '=' in path:
-		nick, path = path.split('=', 1)
-	if not os.path.isdir(path): return []
-	# full file path, file name used in stata ($; no .dta)
-	ans = [fn for fn in os.listdir(path) if fn.endswith('.dta')]
-	ans = [ (os.path.join(path,fn), (nick if nick else path) + '/' + fn[:-4]) for fn in ans]
-	return ans
-
-def prepare_dta_suggestion(dta):
-	#desc = 'temp' if r"`" in dta[1] else 'dta'
-	return dta[1]
-	#return '[{}]: {}'.format(desc, dta[1])
-
-def get_dta_suggestions(view):
-	metadata = get_metadata(view)
-	paths = metadata.get('dtapaths', [])
-	datasets = get_saves(view)
-	for path in paths:
-		datasets.extend(get_dta_in_path(path))
-	datasets = tuple(set(datasets))
-	return datasets, [prepare_dta_suggestion(dta) for dta in datasets]
-
-def get_var_suggestions(view):
-	metadata = get_metadata(view)
-	paths = metadata.get('dtapaths', [])
-	# Don't use get_dta_suggestions b/c I don't want suggestions from -save-
-	datasets = []
-	for path in paths:
-		datasets.extend(get_dta_in_path(path))
-	datasets = tuple(set(datasets))
-	dta_files = tuple(dta[0] for dta in datasets)
-	dta_stata = tuple(dta[1] for dta in datasets)
-	hashvalue = hash(dta_files)
-
-	cwd = get_cwd(view)
-	json_fn = metadata.get('json', [''])[0]
-	json_fn = os.path.join(cwd, json_fn) if cwd and json_fn else ''
-
-	if json_fn:
-		data = read_json(json_fn) # Read old json
-		if data is None: data = {'modified': 0}
-		#old_hashvalue = data['hashvalue'] if data else None # If old json is stale, refresh
-		#if old_hashvalue!=hashvalue:
-		if max(os.path.getmtime(fn) for fn in dta_files) > data['modified']:
-			data = save_json(json_fn, datasets, hashvalue) # Save and update data dict
-			print('JSON file updated')
-		return zip(*data['vars']) # obtain dta, suggestion pairs and transform into 2 lists
-	else:
-		return [],[]
-
-def save_json(json_fn, datasets, hashvalue):
-	modified = calendar.timegm(time.gmtime())
-	data = {'hashvalue':hashvalue, 'modified':modified}
-	variables = []
-	for fn, dta in datasets:
-		varnames = get_vars(fn)
-		variables.extend( (var, '[{}]: {}'.format(dta, var)) for var in varnames)
-	data['vars'] = variables
-	with open(json_fn,'w') as fh:
-		json.dump(data, fh, indent="\t")
-	return data
-
-def get_vars(fn):
-	# "use in 1" is too slow; just do "desc, varlist" 
-	#cmd = """use "{}" in 1, clear nolabel""" 
-	cmd = "describe using {}, varlist"
-	print(cmd.format(fn))
-	StataAutomate(cmd.format(fn), sync=True)
-	varlist = sublime.stata.StReturnString("r(varlist)")
-	#sortlist = sublime.stata.StReturnString("r(sortlist)")
-	#vars = sublime.stata.VariableNameArray()
-	return varlist.split(' ')
+class StataUpdateJsonCommand(sublime_plugin.TextCommand):
+	"""Update the .json used in Stata dataset/varname autocompletions"""
+	def run(self, edit):
+		get_autocomplete_data(self.view, force_update=True, add_from_buffer=False, obtain_varnames=True)
 
 class StataAutocompleteDtaCommand(sublime_plugin.TextCommand):
 	def run(self, edit):
-		self.datasets, self.suggestions = get_dta_suggestions(self.view)
+		datasets = get_autocomplete_data(self.view, add_from_buffer=True, obtain_varnames=False)
+		self.suggestions = sorted( list(zip(*datasets))[1] ) # Tuple (fn, dta name)
 		self.view.window().show_quick_panel(self.suggestions, self.insert_link) #, sublime.MONOSPACE_FONT)
 
 	def insert_link(self, choice):
 		if choice==-1:
 			return
-		link = '"' + self.datasets[choice][1] + '"'
+		link = '"' + self.suggestions[choice] + '"'
 		self.view.run_command("stata_insert", {'link':link})
 
 class StataAutocompleteVarCommand(sublime_plugin.TextCommand):
-	def run(self, edit):
-		self.varlist, self.suggestions = get_var_suggestions(self.view)
-		if self.varlist:
-			self.view.window().show_quick_panel(self.suggestions, self.insert_link) #, sublime.MONOSPACE_FONT)
+	def run(self, edit, menu='all', prev_choice=-1, filter_dta=None):
+
+		# Three menus: normal ("all"), select one DTA only ("filter"), pick which dta to select ("dta")
+		assert menu in ('all', 'filter', 'dta')
+		self.menu = menu
+		self.filter_dta = filter_dta
+
+		# dtamap: dict of dta->varlist
+		# datasets: list of dtas
+		# varlist: dict of varlist -> datasets
+
+		if menu=='all':
+			dtamap = get_autocomplete_data(self.view, add_from_buffer=True, obtain_varnames=True)
+			varlist = defaultdict(list)
+			for dta,variables in dtamap.items():
+				for varname in variables:
+					varlist[varname].append(dta)
+			if not varlist: return
+			self.suggestions = [['    ----> Select this to filter by dataset <----    ','']] + list( [v, ' '.join(d)] for v,d in varlist.items() )
+		elif menu=='filter':
+			dtamap = get_autocomplete_data(self.view, add_from_buffer=True, obtain_varnames=True)
+			varlist = dtamap[filter_dta]
+			if not varlist: return
+			self.suggestions = ['    ----> Variables in {} <----    '.format(filter_dta)] + sorted(varlist)
+		else:
+			dtamap = get_autocomplete_data(self.view, add_from_buffer=True, obtain_varnames=True)
+			self.datasets = dtamap.keys()
+			if not self.datasets: return
+			self.suggestions = [['    ----> Remove filter <----    ', '']] + sorted([d, ' '.join(v)] for d,v in dtamap.items())
+
+		if prev_choice+1>=len(self.suggestions):
+			prev_choice = -1
+		sublime.set_timeout(lambda: self.view.window().show_quick_panel(self.suggestions, self.insert_link, selected_index=prev_choice+1), 1) #, flags=sublime.MONOSPACE_FONT)
 
 	def insert_link(self, choice):
+		# Lots of recursive calls; alternatively I could just have a while loop
 		if choice==-1:
 			return
-		link = self.varlist[choice] + ' '
+
+		if choice==0:
+			if self.menu=='all':
+				self.run(None, menu='dta', prev_choice=0)
+			else:
+				self.run(None, menu='all')
+			return
+
+		if self.menu=='all':
+			link = self.suggestions[choice][0] + ' '
+		elif self.menu=='filter':
+			link = self.suggestions[choice] + ' '
+		else:
+			link = self.suggestions[choice][0]
+			self.run(None, menu='filter', filter_dta=link, prev_choice=0)
+			return
+
 		self.view.run_command("stata_insert", {'link':link})
-		# Call again except if ESC is pressed
-		sublime.set_timeout(lambda: self.view.run_command("stata_autocomplete_var"), 1)
+		
+		# Call again until the user presses Escape
+		self.run(None, menu=self.menu, filter_dta=self.filter_dta, prev_choice=choice)
 
 class StataInsert(sublime_plugin.TextCommand):
 	def run(self, edit, link):
@@ -221,10 +98,6 @@ class StataInsert(sublime_plugin.TextCommand):
 		self.view.insert(edit, startloc, link)
 
 class StataExecuteCommand(sublime_plugin.TextCommand):
-	def get_path(self):
-		fn = self.view.window().active_view().file_name()
-		return None if not fn else os.path.split(fn)[0]
-
 	def run(self, edit, **args):
 		all_text = ""
 		len_sels = 0
@@ -251,7 +124,8 @@ class StataExecuteCommand(sublime_plugin.TextCommand):
 		this_file.write(all_text)
 		this_file.close()
 		
-		cwd = self.get_path()
+		view = self.view.window().active_view()
+		cwd = get_cwd(view)
 		if cwd: StataAutomate("cd " + cwd)
 		
 		StataAutomate(str(args["Mode"]) + " " + dofile_path)
@@ -272,13 +146,13 @@ class StataHelpInternal(sublime_plugin.TextCommand):
 		help_word = self.view.substr(sel)
 		help_word = re.sub(" ","_",help_word)
 
-		help_adress = "http://www.stata.com/help.cgi?" + help_word
+		help_address = "http://www.stata.com/help.cgi?" + help_word
 		helpfile_path = os.path.join(tempfile.gettempdir(), 'st_stata_help.txt')
 
-		print(help_adress)
+		print(help_address)
 
 		try:
-			a = urllib.request.urlopen(help_adress)
+			a = urllib.request.urlopen(help_address)
 			source_code = a.read().decode("utf-8")
 			a.close()
 
@@ -300,3 +174,179 @@ class StataLoad(sublime_plugin.TextCommand):
 	def run(self,edit):
 		sel = self.view.substr(self.view.sel()[0])
 		StataAutomate("use " + sel + ", clear")
+
+# -------------------------------------------------------------
+# Functions for Automation
+# -------------------------------------------------------------
+
+def get_cwd(view):
+	fn = view.file_name()
+	if not fn: return
+	cwd = os.path.split(fn)[0]
+	return cwd
+
+def get_metadata(view):
+	buf = sublime.Region(0, view.size())
+	lines = [view.substr(line).strip() for line in view.split_by_newlines(buf)]
+	lines = [line[2:].strip() for line in lines if line.startswith('*!')]
+	ans = {}
+	for line in lines:
+		key,val = line.split(':', 1)
+		ans[key.strip()] = [cell.strip() for cell in val.split(',')]
+	if 'json' in ans: ans['json'] = ans['json'][0]
+	ans['autoupdate'] = ans['autoupdate'][0].lower() in ('true','1','yes') if 'autoupdate' in ans else False
+	if stata_debug: print('[METADATA]', ans)
+	return ans
+
+def get_autocomplete_data(view, force_update=False, add_from_buffer=True, obtain_varnames=True):
+
+	# Will always check if there are new datasets in the given paths (except if autoupdate=False)
+	# But will not update the varlists if all the datasets were modified before the last update
+
+	# datasets is a tuple of (filename, pretty_dta_name)
+	# variables is a tuple of (varname, pretty_var_name)
+
+	cwd = get_cwd(view)
+	metadata = get_metadata(view)
+	paths = metadata.get('dtapaths', [])
+	json_fn = metadata.get('json', '')
+	json_fn = os.path.join(cwd, json_fn) if cwd and json_fn else ''
+	json_exists = os.path.isfile(json_fn)
+	autoupdate = True if force_update or not json_exists else metadata['autoupdate']
+
+	if force_update and not json_fn:
+		sublime.status_message('StataEdit Error: JSON filename was not set or file not saved')
+		raise Exception(".json filename not specified in metadata")
+
+	if json_exists and not force_update:
+		# Read JSON
+		with open(json_fn) as fh:
+			data = json.load(fh)
+		# If possible, use results stored in JSON
+		if not autoupdate:
+			variables = data['variables']
+			datasets = data['datasets']
+
+	# Else, first get list of datasets
+	if autoupdate:
+		datasets = get_datasets(view, paths)
+	if stata_debug: print('[DATASETS]', datasets)
+
+	# Get list of varnames
+	if obtain_varnames and autoupdate:
+		assert datasets # Bugbug
+		if json_exists and not force_update:
+			last_updated = data['updated']
+			last_modified = max(os.path.getmtime(fn) for fn,_ in data['datasets'])
+			needs_update = (last_updated<last_modified) or (datasets!=data['datasets'])
+		else:
+			needs_update = True
+		variables = get_variables(datasets) if needs_update else data['variables']
+
+	# Save JSON
+	if autoupdate and json_fn and obtain_varnames and needs_update:
+		last_updated = calendar.timegm(time.gmtime())
+		data = {'updated': last_updated, 'datasets': datasets, 'variables': variables}
+		with open(json_fn,'w') as fh:
+			json.dump(data, fh, indent="\t")
+		print('JSON file updated')
+
+	# Add datasets from -save- commands and variables from -gen- commands
+	if add_from_buffer:
+		if obtain_varnames:
+			print(get_generates(view))
+			variables[' (current)'] = get_generates(view)
+		else:
+			datasets.extend(get_saves(view))
+
+	if obtain_varnames:
+		assert variables
+	return (variables if obtain_varnames else datasets)
+
+def get_datasets(view, paths):
+	return list([fn,dta] for (fn,dta) in set( dta for path in paths for dta in get_dta_in_path(view, path) ))
+
+def get_dta_in_path(view, path):
+	"""Return list of tuples (full_filename, pretty_filename)"""
+
+	# Paths may be relative to current Stata file
+	cwd = get_cwd(view)
+	os.chdir(cwd)
+
+	nick = ''
+	if '=' in path:
+		nick, path = path.split('=', 1)
+	if not os.path.isdir(path): return []
+	# full file path, file name used in stata ($; no .dta)
+	ans = [fn for fn in os.listdir(path) if fn.endswith('.dta')]
+	ans = [ (os.path.join(path,fn), (nick if nick else path) + '/' + fn[:-4]) for fn in ans]
+	return ans
+
+def get_variables(datasets):
+	"""Return dict of lists dta:varnames for all datasets"""
+	return {dta:get_vars(fn) for (fn,dta) in datasets}
+
+def get_vars(fn):
+	# "use in 1" is too slow; just do "desc, varlist" 
+	#cmd = """use "{}" in 1, clear nolabel""" 
+	cmd = "describe using {}, varlist"
+	StataAutomate(cmd.format(fn), sync=True)
+	varlist = sublime.stata.StReturnString("r(varlist)")
+	#sortlist = sublime.stata.StReturnString("r(sortlist)")
+	#vars = sublime.stata.VariableNameArray()
+	if stata_debug: print('[DTA={}]'.format(fn), varlist)
+	return varlist.split(' ')
+
+def get_saves(view):
+	buf = sublime.Region(0, view.size())
+	pat = '''^[ \t]*save[ \t]+"?([a-zA-Z0-9_`'.~ /:\\-]+)"?'''
+	source = view.substr(buf)
+	regex = re.findall(pat, source, re.MULTILINE)
+	ans = [('',fn) for fn in regex]
+	return ans
+
+def get_generates(view):
+	buf = sublime.Region(0, view.size())
+	# Only accepts gen|generate|egen (the most common ones) and only the common numeric types
+	pat = '''^[ \t]*(?:gen|generate|egen)[ \t]+(?:(?:byte|int|long|float|double)[ \t]+)?([a-zA-Z0-9_`']+)[ \t]*='''
+	source = view.substr(buf)
+	regex = re.findall(pat, source, re.MULTILINE)
+	return list(set(regex))
+
+# -------------------------------------------------------------
+# Functions for Talking to Stata
+# -------------------------------------------------------------
+
+def plugin_loaded():
+	global settings
+	settings = sublime.load_settings(settings_file)
+
+def StataAutomate(stata_command, sync=False):
+	""" Launch Stata (if needed) and send commands """
+	try:
+		sublime.stata.DoCommand(stata_command) if sync else sublime.stata.DoCommandAsync(stata_command)
+	except:
+		launch_stata()
+		sublime.stata.DoCommand(stata_command) if sync else sublime.stata.DoCommandAsync(stata_command)
+	if stata_debug: print('[CMD]', stata_command)
+
+def launch_stata():
+	win32api.WinExec(settings.get("stata_path"), win32con.SW_SHOWMINNOACTIVE)
+	sublime.stata = win32com.client.Dispatch ("stata.StataOLEApp")
+
+	# Stata takes a while to start and will silently discard commands sent until it finishes starting
+	# Workaround: call a trivial command and see if it was executed (-local- in this case)
+	seed = int(random.random()*1e6) # Any number
+	for i in range(50):
+		sublime.stata.DoCommand('local {} ok'.format(seed))
+		sublime.stata.DoCommand('macro list')
+		rc = sublime.stata.MacroValue('_{}'.format(seed))
+		if rc=='ok':
+			sublime.stata.DoCommand('local {}'.format(seed)) # Empty it
+			sublime.stata.DoCommand('cap cls')
+			print("Stata process started (waited {}ms)".format((1+i)/10))
+			break
+		else:
+			time.sleep(0.1)
+	else:
+		raise IOError('Stata process did not start before timeout')

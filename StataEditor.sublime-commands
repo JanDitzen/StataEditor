@@ -20,5 +20,9 @@
     {
         "caption": "Stata: Load Stata dataset",
         "command": "stata_load"
+    },
+    {
+        "caption": "Stata: Update autocomplete",
+        "command": "stata_update_json"
     }
 ]
