@@ -264,7 +264,7 @@ def get_autocomplete_data(view, force_update=False, add_from_buffer=True, obtain
 	# Add datasets from -save- commands and variables from -gen- commands
 	if add_from_buffer:
 		if obtain_varnames:
-			print(get_generates(view))
+			if stata_debug: print('Varnames from current file:', get_generates(view))
 			variables[' (current)'] = get_generates(view)
 		else:
 			datasets.extend(get_saves(view))
