@@ -8,7 +8,7 @@ from collections import defaultdict
 # http://msdn.microsoft.com/en-us/library/windows/desktop/ms633548(v=vs.85).aspx
 
 settings_file = "StataEditor.sublime-settings"
-stata_debug = True
+stata_debug = False
 
 # -------------------------------------------------------------
 # Classes
@@ -22,6 +22,8 @@ class StataUpdateJsonCommand(sublime_plugin.TextCommand):
 class StataAutocompleteDtaCommand(sublime_plugin.TextCommand):
 	def run(self, edit):
 		datasets = get_autocomplete_data(self.view, add_from_buffer=True, obtain_varnames=False)
+		if datasets is None:
+			return
 		self.suggestions = sorted( list(zip(*datasets))[1] ) # Tuple (fn, dta name)
 		self.view.window().show_quick_panel(self.suggestions, self.insert_link) #, sublime.MONOSPACE_FONT)
 
@@ -43,8 +45,11 @@ class StataAutocompleteVarCommand(sublime_plugin.TextCommand):
 		# datasets: list of dtas
 		# varlist: dict of varlist -> datasets
 
+		dtamap = get_autocomplete_data(self.view, add_from_buffer=True, obtain_varnames=True)
+		if dtamap is None:
+			return
+
 		if menu=='all':
-			dtamap = get_autocomplete_data(self.view, add_from_buffer=True, obtain_varnames=True)
 			varlist = defaultdict(list)
 			for dta,variables in dtamap.items():
 				for varname in variables:
@@ -52,12 +57,10 @@ class StataAutocompleteVarCommand(sublime_plugin.TextCommand):
 			if not varlist: return
 			self.suggestions = [['    ----> Select this to filter by dataset <----    ','']] + list( [v, ' '.join(d)] for v,d in varlist.items() )
 		elif menu=='filter':
-			dtamap = get_autocomplete_data(self.view, add_from_buffer=True, obtain_varnames=True)
 			varlist = dtamap[filter_dta]
 			if not varlist: return
 			self.suggestions = ['    ----> Variables in {} <----    '.format(filter_dta)] + sorted(varlist)
 		else:
-			dtamap = get_autocomplete_data(self.view, add_from_buffer=True, obtain_varnames=True)
 			self.datasets = dtamap.keys()
 			if not self.datasets: return
 			self.suggestions = [['    ----> Remove filter <----    ', '']] + sorted([d, ' '.join(v)] for d,v in dtamap.items())
@@ -192,7 +195,11 @@ def get_metadata(view):
 	ans = {}
 	for line in lines:
 		key,val = line.split(':', 1)
-		ans[key.strip()] = [cell.strip() for cell in val.split(',')]
+		key = key.strip()
+		if key not in ans:
+			ans[key] = [cell.strip() for cell in val.split(',')]
+		else:
+			print("Warning - Repeated autocomplete key:", key)
 	if 'json' in ans: ans['json'] = ans['json'][0]
 	ans['autoupdate'] = ans['autoupdate'][0].lower() in ('true','1','yes') if 'autoupdate' in ans else False
 	if stata_debug: print('[METADATA]', ans)
@@ -207,6 +214,9 @@ def get_autocomplete_data(view, force_update=False, add_from_buffer=True, obtain
 	# variables is a tuple of (varname, pretty_var_name)
 
 	cwd = get_cwd(view)
+	if cwd is None:
+		return
+		
 	metadata = get_metadata(view)
 	paths = metadata.get('dtapaths', [])
 	json_fn = metadata.get('json', '')
