@@ -17,7 +17,19 @@
 			<key>match</key>
 			<string>^\*.*|^\s*\*.*</string>
 			<key>name</key>
-			<string>comment.line.stata</string>
+			<string>comment.line.star.stata</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>(?&lt;=^| |\t)/{2}(?!/).*</string>
+			<key>name</key>
+			<string>comment.line.double-slash.stata</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>(?&lt;=^| |\t)/{3}(?!/).*</string>
+			<key>name</key>
+			<string>comment.line.triple-slash.stata</string>
 		</dict>
 		<dict>
 			<key>begin</key>

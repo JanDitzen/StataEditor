@@ -5,8 +5,14 @@ fileTypes: [do, ado, doh, mata]
 uuid: 3bf67fa3-ba3c-42ad-b5e8-08c1206530e9
 
 patterns:
-- name: comment.line.stata
+- name: comment.line.star.stata
   match: ^\*.*|^\s*\*.*
+
+- name: comment.line.double-slash.stata
+  match: (?<=^| |\t)/{2}(?!/).*
+
+- name: comment.line.triple-slash.stata
+  match: (?<=^| |\t)/{3}(?!/).*
 
 - name: comment.block.stata
   begin: /\*
