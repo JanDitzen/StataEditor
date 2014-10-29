@@ -32,8 +32,10 @@ patterns:
   begin: '`"'
   end: '"'''
   patterns:
-  - match: (`\w{1,31}'|`\w*`\w*'\w*')
-    name: variable.parameter.local.stata
+  - name: variable.parameter.local.stata
+    match: (`\w{1,31}'|`\w*`\w*'\w*')
+  - name: variable.parameter.global.stata
+    match: \$\w+|\${\w+}
 
 - name: keyword.operator.stata
   match: (\>\=|\<\=|\=\=|\!\=|\~\=|\+|\-|\*|\/|\^|\&|\||\!|\~|\>|\<|\=|\.)
