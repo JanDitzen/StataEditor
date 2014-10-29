@@ -129,7 +129,7 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>\b([\s,]+replace|[\s,]+clear|[\s,]+append|all|text|long|wide|using|drop|force)\b</string>
+			<string>\b([\s,]+replace|[\s,]+clear|[\s,]+append|text|long|wide|using|drop|force)\b</string>
 			<key>name</key>
 			<string>keyword.options.stata</string>
 		</dict>

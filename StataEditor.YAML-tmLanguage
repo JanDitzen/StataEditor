@@ -58,7 +58,7 @@ patterns:
   match: \b(define|program|end)\b
 
 - name: keyword.options.stata
-  match: \b([\s,]+replace|[\s,]+clear|[\s,]+append|all|text|long|wide|using|drop|force)\b
+  match: \b([\s,]+replace|[\s,]+clear|[\s,]+append|text|long|wide|using|drop|force)\b
 
 - name: variable.language.stata
   match: (\b[A-Za-z0-9_]+\.dta|[A-Za-z0-9_]+\.txt|[A-Za-z0-9_]+\.dct|[A-Za-z0-9_]+\.do|[A-Za-z0-9_]+\.ado|\$\w+)\b
