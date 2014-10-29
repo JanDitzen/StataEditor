@@ -46,14 +46,6 @@
 			<string>variable.parameter.local.stata</string>
 		</dict>
 		<dict>
-			<key>begin</key>
-			<string>\`\"</string>
-			<key>end</key>
-			<string>\"\'</string>
-			<key>name</key>
-			<string>variable.parameter.stata</string>
-		</dict>
-		<dict>
 			<key>match</key>
 			<string>\$\w+|\${\w+}</string>
 			<key>name</key>
@@ -61,9 +53,9 @@
 		</dict>
 		<dict>
 			<key>begin</key>
-			<string>\"</string>
+			<string>(?&lt;!`)"(?!')</string>
 			<key>end</key>
-			<string>\"</string>
+			<string>(?&lt;!`)"(?!')</string>
 			<key>name</key>
 			<string>string.quoted.double.stata</string>
 		</dict>

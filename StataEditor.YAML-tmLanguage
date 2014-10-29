@@ -21,16 +21,12 @@ patterns:
 - name: variable.parameter.local.stata
   match: (`\w{1,31}'|`\w*`\w*'\w*')
 
-- name: variable.parameter.stata
-  begin: \`\"
-  end: \"\'
-
 - name: variable.parameter.global.stata
   match: \$\w+|\${\w+}
 
 - name: string.quoted.double.stata
-  begin: \"
-  end: \"
+  begin: (?<!`)"(?!')
+  end: (?<!`)"(?!')
 
 - name: string.quoted.compound.stata
   begin: '`"'
