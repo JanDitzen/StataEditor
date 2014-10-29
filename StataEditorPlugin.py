@@ -213,6 +213,10 @@ def get_autocomplete_data(view, force_update=False, add_from_buffer=True, obtain
 	# datasets is a tuple of (filename, pretty_dta_name)
 	# variables is a tuple of (varname, pretty_var_name)
 
+	is_stata = view.match_selector(0, "source.stata")
+	if not is_stata:
+		return
+			
 	cwd = get_cwd(view)
 	if cwd is None:
 		return

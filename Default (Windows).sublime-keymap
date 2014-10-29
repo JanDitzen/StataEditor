@@ -3,13 +3,15 @@
 	{ "keys": ["ctrl+space"], "command": "stata_autocomplete_dta", "context":
 		[
 			{ "key": "preceding_text", "operator": "regex_contains", "operand": "(use|using)[ \t]+" },
-			{ "key": "setting.tab_completion", "operator": "equal", "operand": true }
+			{ "key": "setting.tab_completion", "operator": "equal", "operand": true },
+			{ "key": "selector", "operator": "equal", "operand": "source.stata" }
 		]
 	},
 	// Override "select scope" when dealing with variables
 	{ "keys": ["ctrl+shift+space"], "command": "stata_autocomplete_var", "context":
 		[
-			{ "key": "setting.tab_completion", "operator": "equal", "operand": true }
+			{ "key": "setting.tab_completion", "operator": "equal", "operand": true },
+			{ "key": "selector", "operator": "equal", "operand": "source.stata" }
 		]
 	},
 	// Overrides build command
