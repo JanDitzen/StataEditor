@@ -16,7 +16,7 @@ stata_debug = False
 
 class StataBuildCommand(sublime_plugin.WindowCommand):
 	def run(self, **kwargs):
-		getView().window().run_command("stata_execute", {"build":true, "mode": kwargs.get("Mode","do")})
+		getView().window().run_command("stata_execute", {"build":True, "mode": kwargs.get("Mode","do")})
 		print('FOO BAR!!!')
 
 class StataUpdateJsonCommand(sublime_plugin.TextCommand):
@@ -114,7 +114,7 @@ class StataExecuteCommand(sublime_plugin.TextCommand):
 		for sel in sels:
 			len_sels = len_sels + len(sel)
 
-		if len_sels==0 or args.get("build", ""):
+		if len_sels==0 or args.get("Build", False)==True:
 			all_text = self.view.substr(self.view.find('(?s).*',0))
 		else:
 			self.view.run_command("expand_selection", {"to": "line"})
