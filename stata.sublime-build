@@ -1,6 +1,10 @@
 {
-    "asd": ["python", "-u", "$file"],
     "selector": "source.stata",
-    "target":"StataEditorPlugin",
+    "target": "stata_build",
+    "variants": [
+    	{"Mode": "run",
+    	"name": "Run"}
+    ],
+    "Mode": "do",
     "name": "Do",
 }
