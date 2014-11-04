@@ -3,8 +3,8 @@
     "target": "stata_build",
     "variants": [
     	{"Mode": "run",
-    	"name": "Run Stata do-file"}
+    	"name": "Run"}
     ],
     "Mode": "do",
-    "name": "Do Stata do-file",
+    "name": "Do",
 }
