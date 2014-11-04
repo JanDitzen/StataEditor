@@ -180,6 +180,15 @@ class StataLoad(sublime_plugin.TextCommand):
 		sel = self.view.substr(self.view.sel()[0])
 		StataAutomate("use " + sel + ", clear")
 
+class StataLocal(sublime_plugin.TextCommand):
+	def run(self,edit):
+		sels = self.view.sel()
+		for sel in sels:
+			word_sel = self.view.word(sel.a)
+			word_str = self.view.substr(word_sel)
+			word_str = "`"+word_str+"'"
+			self.view.replace(edit,word_sel,word_str)
+
 # -------------------------------------------------------------
 # Functions for Automation
 # -------------------------------------------------------------

@@ -1,23 +1,27 @@
 Stata Editor for Sublime Text 3
 ===============================
-(This is a WiP clone of the work by Mattias Nordin, intended for personal use)
+Original work by [Mattias Nordin](http://sites.google.com/site/econnordin/)
+Fork by [Sergio Correia](http://scorreia.com/)
 
-by [Mattias Nordin](http://sites.google.com/site/econnordin/)
-
-* Version 0.3.0
-* Date: October 22, 2014
+* Version 0.4.0
+* Date: November 4, 2014
 
 Features
 --------
 This package provides the ability to write and run Stata code from Sublime Text 3 (ST3). Features in this package include:
 
 * Clear syntax highlighting
-* Ability to run do-files from ST3 using both ctrl + d ("do") and ctrl + r ("run")
+* Extends Sublime Text "build" feature to support the Stata "do" (ctrl+b) and "run" commands (ctrl+shift+b).
 * Run only selected code with support for multiple selections
-* Access Stata help files from ST3 by selecting the command for which you want access to the documentation and press ctrl + shift + n (open help file in Stata), or ctrl + shift + h (open help file in ST3). For the latter option, an internet connection is required.
-* Shorthand for creation of locals by pressing ctrl + l
+* Two dozen snippets and completions
+* When the required metadata is set (see _autocomplete_ snippet), allows variable and dataset autocompletion
+* Variable autocompletion inspects i) datasets in the metadata paths and ii) generate/egen lines, and is available with ctrl+shift+space
+* Dataset autocompletion inspects i) metadata paths and ii) save lines, and is available after _use_ or _using_ keywords, either automatically or with ctrl+space
+* For speed reasons (or if the datasets are not locally available), the autocomplete contents are saved in a JSON file (usually stata-autocomplete.json)
+* Access Stata help files by selecting the command for which you want access to the documentation and press F1 (open help file in Sublime Text) or shft+F1 (open help file in Stata). For the latter option, an internet connection is required.
+* Automatic expansion of quotes and local variable delimiters
+* Shorthand for creation of locals by pressing ctrl+shift+l
 * Load a new Stata dataset by selecting a path and pressing ctrl + shift + u (Equivalent to the command "use 'path', clear"). Please, note that your current work will then be lost, so remember to save your dataset!
-* Some snippets and completions
 * Plus all other features that come with ST3!
 
 Requirements and Setup
@@ -30,11 +34,13 @@ To install the package follow the steps outlined below. You can install StataEdi
 
 2. Install Package Control. To get Package Control, click [here](https://sublime.wbond.net/installation) and follow the instructions for ST3.
 
-3. Open ST3 and click Preferences -> Package Control. Choose "Install Package" and choose StataEditor from the list. Repeat this step and install the Pywin32 package.
+3. Open ST3 and click Preferences -> Package Control. Choose "Install Package" and choose StataEditor from the list.
 
-4. If the path to your Stata installation is "C:/Program Files (x86)/Stata13/StataMP-64.exe" you can skip this step. If not, select Preferences -> Package Settings -> StataEditor -> Settings - Default. Copy the content and then go to Preferences -> Package Settings -> StataEditor -> Settings - User and paste your copied text in the new file. Then change the path to where your Stata installation is located (note that you need to use forward slash, "/", instead of backward slash, "\") and save the file. Do not change the content of the Settings - Default file. While this will work temporarily, with the next update your changes will disappear. The content of the Settings - User file will not be overwritten when the package is updated.
+4. Repeat this step and install the Pywin32 package.
 
-5. Finally, to use Stata interactively from ST3, you also need to register the Stata Automation type library. Instructions can be found [here](http://www.stata.com/automation/#createmsapp). Note that I have had to use the Windows Vista instructions for Windows 7 to get Stata Automation to work. Once the Stata Automation type library has been registered, you are good to go!
+5. If the path to your Stata installation is "C:/Program Files (x86)/Stata13/StataMP-64.exe" you can skip this step. If not, select Preferences -> Package Settings -> StataEditor -> Settings - Default. Copy the content and then go to Preferences -> Package Settings -> StataEditor -> Settings - User and paste your copied text in the new file. Then change the path to where your Stata installation is located (note that you need to use forward slash, "/", instead of backward slash, "\") and save the file. Do not change the content of the Settings - Default file. While this will work temporarily, with the next update your changes will disappear. The content of the Settings - User file will not be overwritten when the package is updated.
+
+6. Finally, to use Stata interactively from ST3, you also need to register the Stata Automation type library. Instructions can be found [here](http://www.stata.com/automation/#createmsapp). Note that I have had to use the Windows Vista instructions for Windows 7 to get Stata Automation to work. Once the Stata Automation type library has been registered, you are good to go!
 
 Known issues
 ------------

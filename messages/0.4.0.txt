@@ -1,0 +1,11 @@
+Changes in version 0.4.0:
+
+	*Added build system
+    *Code intelligence: added variable and dataset autocomplete, based on the "autocomplete" metadata (check relevant snippet)
+    *Dataset autocompletion occurs when in a relevant line, such as merge, use, append (ctrl+space)
+    *Variable autocompletion occurs anywhere when ctrl+shift+space is pressed
+    *Changed key bindings to avoid conflicts with default ones
+    *Improved syntax settings (e.g. to recognize compound quotes)
+    *Set syntax settings to YAML. This is then compiled to .tmLanguage with "AAAPackageDev: Convert (Yaml..)"
+	*Added a dozen snippets
+	*Update of the readme file
