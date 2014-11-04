@@ -16,7 +16,7 @@ stata_debug = False
 
 class StataBuildCommand(sublime_plugin.WindowCommand):
 	def run(self, **kwargs):
-		view.run_command("stata_execute", {"build":true, "mode": kwargs.get("Mode","do")})
+		self.view.run_command("stata_execute", {"build":true, "mode": kwargs.get("Mode","do")})
 		print('FOO BAR!!!')
 
 class StataUpdateJsonCommand(sublime_plugin.TextCommand):
