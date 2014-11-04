@@ -1,6 +1,7 @@
 Stata Editor for Sublime Text 3
 ===============================
 Original work by [Mattias Nordin](http://sites.google.com/site/econnordin/)
+
 Fork by [Sergio Correia](http://scorreia.com/)
 
 * Version 0.4.0
@@ -11,7 +12,7 @@ Features
 This package provides the ability to write and run Stata code from Sublime Text 3 (ST3). Features in this package include:
 
 * Clear syntax highlighting
-* Extends Sublime Text "build" feature to support the Stata "do" (ctrl+b) and "run" commands (ctrl+shift+b).
+* Extends Sublime Text "build" feature to support the Stata _do_ (ctrl+b) and _run_ commands (ctrl+shift+b).
 * Run only selected code with support for multiple selections
 * Two dozen snippets and completions
 * When the required metadata is set (see _autocomplete_ snippet), allows variable and dataset autocompletion
