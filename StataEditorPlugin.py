@@ -14,6 +14,10 @@ stata_debug = False
 # Classes
 # -------------------------------------------------------------
 
+class StataBuildCommand(sublime_plugin.TextCommand):
+	def run(self, edit):
+		print('Test')
+
 class StataUpdateJsonCommand(sublime_plugin.TextCommand):
 	"""Update the .json used in Stata dataset/varname autocompletions"""
 	def run(self, edit):

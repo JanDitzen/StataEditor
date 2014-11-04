@@ -1,0 +1,6 @@
+{
+    "cmds": ["python", "-u", "$file"],
+    "selector": "source.stata",
+    "target":"stata_build"
+    "name": "Do",
+}
