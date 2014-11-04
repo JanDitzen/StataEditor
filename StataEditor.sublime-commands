@@ -1,15 +1,5 @@
 [
     {
-        "caption": "Stata: Do do-file",
-        "command": "stata_execute",
-        "args": {"Mode": "do"}
-    },
-    {
-    	"caption": "Stata: Run do-file",
-    	"command": "stata_execute",
-        "args": {"Mode": "run"}
-    },
-    {
         "caption": "Stata: Help (external)",
         "command": "stata_help_external"
     },
