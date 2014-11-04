@@ -14,9 +14,10 @@ stata_debug = False
 # Classes
 # -------------------------------------------------------------
 
-class StataBuildCommand(sublime_plugin.TextCommand):
-	def run(self, edit):
-		print('Test')
+class StataBuildCommand(sublime_plugin.WindowCommand):
+	def run(self, **kwargs):
+		print('FOO BAR!!')
+		pass
 
 class StataUpdateJsonCommand(sublime_plugin.TextCommand):
 	"""Update the .json used in Stata dataset/varname autocompletions"""
@@ -113,12 +114,10 @@ class StataExecuteCommand(sublime_plugin.TextCommand):
 		for sel in sels:
 			len_sels = len_sels + len(sel)
 
-		if len_sels == 0:
+		if len_sels==0 or args.get("build", ""):
 			all_text = self.view.substr(self.view.find('(?s).*',0))
-
 		else:
 			self.view.run_command("expand_selection", {"to": "line"})
-
 			for sel in sels:
 				all_text = all_text + self.view.substr(sel)
 
