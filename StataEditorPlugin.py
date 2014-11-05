@@ -6,7 +6,7 @@ import sublime, sublime_plugin
 try:
 	import Pywin32.setup, win32com.client, win32con, win32api
 except:
-	sublime.status_message("StataEditor - Step 2: Install the Pywin32 package")
+	sublime.ok_cancel_dialog("[StataEditor - Step 2] Install Pywin32? (click ok, type Pywin32 and press enter)")
 	raise Exception
 
 import os, tempfile, subprocess, re, urllib, json, random, time, calendar, winreg
@@ -222,7 +222,7 @@ class StataUpdateExecutablePath(sublime_plugin.ApplicationCommand):
 			pass
 
 		fn = get_exe_path()
-		msg ="StataEditor - Step 3: Enter the path of the Stata executable"
+		msg ="StataEditor Installation- Step 3: Enter the path of the Stata executable"
 		sublime.active_window().show_input_panel(msg, fn, update_settings, check_correct, cancel_update)
 
 
@@ -415,7 +415,7 @@ def launch_stata():
 		win32api.WinExec(stata_fn, win32con.SW_SHOWMINNOACTIVE)
 		sublime.stata = win32com.client.Dispatch ("stata.StataOLEApp")
 	except:
-		sublime.error_message("StataEditor - Step 4: Register the Stata Automation type library, see http://www.stata.com/automation/#install")
+		sublime.error_message("StataEditor Installation- Step 4: Register the Stata Automation type library, see http://www.stata.com/automation/#install")
 
 	# Stata takes a while to start and will silently discard commands sent until it finishes starting
 	# Workaround: call a trivial command and see if it was executed (-local- in this case)
