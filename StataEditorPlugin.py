@@ -6,7 +6,7 @@ import sublime, sublime_plugin
 try:
 	import Pywin32.setup, win32com.client, win32con, win32api
 except:
-	sublime.error_message("Install the package Pywin32")
+	sublime.status_message("Cannot interact with Stata - Install the Pywin32 package!")
 	raise Exception
 
 import os, tempfile, subprocess, re, urllib, json, random, time, calendar, winreg
