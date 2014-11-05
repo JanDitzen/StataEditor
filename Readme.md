@@ -4,8 +4,8 @@ Original work by [Mattias Nordin](http://sites.google.com/site/econnordin/)
 
 Fork by [Sergio Correia](http://scorreia.com/)
 
-* Version 0.4.0
-* Date: November 4, 2014
+* Version 0.5.0
+* Date: November 5, 2014
 
 Features
 --------
