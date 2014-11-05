@@ -14,5 +14,9 @@
     {
         "caption": "Stata: Update autocomplete",
         "command": "stata_update_json"
+    },
+    {
+        "caption": "Stata: Change the path of the executable",
+        "command": "stata_update_executable_path"
     }
 ]
