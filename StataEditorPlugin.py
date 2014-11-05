@@ -237,7 +237,10 @@ class StataUpdateExecutablePathCommand(sublime_plugin.ApplicationCommand):
 
 		def check_correct():
 			is_correct = check_correct_executable()
-			pass
+			if is_correct:
+				sublime.status_message("Path is valid")
+			else:
+				sublime.status_message("Path is currently NOT valid")
 
 		fn = get_exe_path()
 		msg ="StataEditor: Enter the path of the Stata executable"
