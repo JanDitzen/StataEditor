@@ -6,7 +6,7 @@ import sublime, sublime_plugin
 try:
 	import Pywin32.setup, win32com.client, win32con, win32api
 except:
-	sublime.status_message("Cannot interact with Stata - Install the Pywin32 package!")
+	sublime.status_message("Cannot interact with Stata - Install the Pywin32 package!!!!")
 	raise Exception
 
 import os, tempfile, subprocess, re, urllib, json, random, time, calendar, winreg
@@ -415,7 +415,7 @@ def launch_stata():
 		win32api.WinExec(stata_fn, win32con.SW_SHOWMINNOACTIVE)
 		sublime.stata = win32com.client.Dispatch ("stata.StataOLEApp")
 	except:
-		sublime.error_message("Cannot run Stata; register Stata Automation type library: {}".format(fn))
+		sublime.error_message("Cannot run Stata; register Stata Automation type library: {}".format(stata_fn))
 
 	# Stata takes a while to start and will silently discard commands sent until it finishes starting
 	# Workaround: call a trivial command and see if it was executed (-local- in this case)
