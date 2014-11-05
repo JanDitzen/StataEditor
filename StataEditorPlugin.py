@@ -191,12 +191,29 @@ class StataLocal(sublime_plugin.TextCommand):
 
 class StataUpdateExecutablePath(sublime_plugin.ApplicationCommand):
 	def run(self, **kwargs):
+
+		def update_settings(fn):
+			settings_fn = 'StataEditor.sublime-settings'
+			settings = sublime.load_settings(settings_fn)
+
+			old_fn = settings.get('stata_path', '')
+			if old_fn!=fn:
+				settings.set('stata_path_old', old_fn)
+
+			settings.set('stata_path', fn)
+			sublime.save_settings(settings_fn)
+			sublime.status_message("Stata path updated")
+
+		def cancel_update():
+			sublime.status_message("Stata path not updated")
+
+		def check_correct(fn):
+			pass
+
 		fn = get_exe_path()
-		if fn is None: return
-		settings_fn = 'StataEditor.sublime-settings'
-		settings = sublime.load_settings(settings_fn)
-		settings.set('Debug', fn)
-		sublime.save_settings(settings_fn)
+		msg ="Enter the path of the Stata executable"
+		sublime.active_window().show_input_panel(msg, fn, update_settings, check_correct, cancel_update)
+
 
 # -------------------------------------------------------------
 # Functions for Automation
@@ -401,7 +418,7 @@ def get_exe_path():
 		fn = winreg.QueryValue(key, None).strip('"').split('"')[0]
 	except:
 		print("Couldn't find path")
-		return
+		return ''
 
 	print(fn)
 	return fn
