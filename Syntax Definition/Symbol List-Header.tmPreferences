@@ -5,7 +5,7 @@
 	<key>name</key>
 	<string>Symbol List</string>
 	<key>scope</key>
-	<string>source.spam comment.line.header.stata</string>
+	<string>source.stata comment.line.header.stata</string>
 	<key>settings</key>
 	<dict>
 		<key>showInIndexedSymbolList</key>
