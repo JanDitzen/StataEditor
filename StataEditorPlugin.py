@@ -69,7 +69,8 @@ class StataAutocompleteVarCommand(sublime_plugin.TextCommand):
 
 		self.menu = menu
 		self.filter_dta = filter_dta
-		f = lambda var: "    [#{}]".format(1+sorts.index(var)) if var in sorts else ''
+		#f = lambda var: "    [#{}]".format(1+sorts.index(var)) if var in sorts else ''
+		f = lambda var: "* " if var in sorts else ''
 
 		if menu=='all':
 			varlist = defaultdict(list)
@@ -81,9 +82,10 @@ class StataAutocompleteVarCommand(sublime_plugin.TextCommand):
 		elif menu=='filter':
 			sorts = sortlist[filter_dta]
 			#varlist = sorted(dtamap[filter_dta])
-			varlist = sorted(dtamap[filter_dta], key=lambda x: (x not in sorts, x))
+			varlist = sorted(dtamap[filter_dta], key=lambda x: (sorts.index(x) if x in sorts else '', x))
 			if not varlist: return
-			self.suggestions = ['    ----> Variables in {} <----    '.format(filter_dta)] + [var + f(var) for var in varlist]
+			self.suggestions = ['    ----> Variables in {} <----    '.format(filter_dta)]
+			self.suggestions.extend(f(var) + var for var in varlist)
 		else:
 			self.datasets = dtamap.keys()
 			if not self.datasets: return
@@ -108,7 +110,7 @@ class StataAutocompleteVarCommand(sublime_plugin.TextCommand):
 		if self.menu=='all':
 			link = self.suggestions[choice][0] + ' '
 		elif self.menu=='filter':
-			link = self.suggestions[choice] + ' '
+			link = self.suggestions[choice].strip(' *') + ' '
 		else:
 			link = self.suggestions[choice][0]
 			self.run(None, menu='filter', filter_dta=link, prev_choice=0)
