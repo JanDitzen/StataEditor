@@ -69,7 +69,7 @@ class StataAutocompleteVarCommand(sublime_plugin.TextCommand):
 
 		self.menu = menu
 		self.filter_dta = filter_dta
-		f = lambda var: "    #{}".format(1+sorts.index(var)) if var in sorts else ''
+		f = lambda var: "  [#{}]".format(1+sorts.index(var)) if var in sorts else ''
 
 		if menu=='all':
 			varlist = defaultdict(list)
