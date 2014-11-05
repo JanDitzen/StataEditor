@@ -197,14 +197,14 @@ class StataUpdateExecutablePath(sublime_plugin.ApplicationCommand):
 			settings = sublime.load_settings(settings_fn)
 
 			old_fn = settings.get('stata_path', '')
-			if old_fn!=fn:
-				settings.set('stata_path_old', old_fn)
-
-			settings.set('stata_path', fn)
-			sublime.save_settings(settings_fn)
-			sublime.status_message("Stata path updated")
 
 			if check_correct_executable(fn):
+				if old_fn!=fn:
+					settings.set('stata_path_old', old_fn)
+
+				settings.set('stata_path', fn)
+				sublime.save_settings(settings_fn)
+				sublime.status_message("Stata path updated")
 				launch_stata()
 			else:
 				sublime.error_message("Cannot run Stata; the path does not exist: {}".format(stata_fn))
