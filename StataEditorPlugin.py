@@ -82,6 +82,7 @@ class StataAutocompleteVarCommand(sublime_plugin.TextCommand):
 		elif menu=='filter':
 			sorts = sortlist[filter_dta]
 			#varlist = sorted(dtamap[filter_dta])
+			# First shows the variables that sort the dataset
 			varlist = sorted(dtamap[filter_dta], key=lambda x: (sorts.index(x) if x in sorts else '', x))
 			if not varlist: return
 			self.suggestions = ['    ----> Variables in {} <----    '.format(filter_dta)]
