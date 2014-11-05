@@ -9,8 +9,8 @@ except:
 	rc = sublime.ok_cancel_dialog("[StataEditor - Step 2] Install Pywin32? (click ok, type Pywin32 and press enter)")
 	if rc:
 		window.run_command('install_package')
-	else:
-		raise Exception
+	#else:
+	#	raise Exception
 
 import os, tempfile, subprocess, re, urllib, json, random, time, calendar, winreg
 from collections import defaultdict
