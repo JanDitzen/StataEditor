@@ -181,7 +181,7 @@
 				<key>1</key>
 				<dict>
 					<key>name</key>
-					<string>entity.name.function.stata</string>
+					<string>support.function.stata</string>
 				</dict>
 			</dict>
 			<key>match</key>
