@@ -207,9 +207,6 @@ class StataUpdateExecutablePath(sublime_plugin.ApplicationCommand):
 		def cancel_update():
 			sublime.status_message("Stata path not updated")
 
-		def check_correct(fn):
-			pass
-
 		fn = get_exe_path()
 		msg ="Enter the path of the Stata executable"
 		sublime.active_window().show_input_panel(msg, fn, update_settings, check_correct, cancel_update)
@@ -391,7 +388,11 @@ def StataAutomate(stata_command, sync=False):
 	if stata_debug: print('[CMD]', stata_command)
 
 def launch_stata():
-	win32api.WinExec(settings.get("stata_path"), win32con.SW_SHOWMINNOACTIVE)
+	stata_fn = settings.get("stata_path")
+	if not: check_correct_executable(stata_fn)
+		sublime.run_command('stata_update_executable_path')
+
+	win32api.WinExec(stata_fn, win32con.SW_SHOWMINNOACTIVE)
 	sublime.stata = win32com.client.Dispatch ("stata.StataOLEApp")
 
 	# Stata takes a while to start and will silently discard commands sent until it finishes starting
@@ -422,3 +423,6 @@ def get_exe_path():
 
 	print(fn)
 	return fn
+
+def check_correct_executable(fn):
+	return os.path.isfile(fn) and 'stata' in fn.lower()
