@@ -14,18 +14,6 @@
 			{ "key": "selector", "operator": "equal", "operand": "source.stata" }
 		]
 	},
-	// // Overrides build command
-	// { "keys": ["ctrl+b"],	"command": "stata_execute",	"args": {"Mode": "do"},	"context":
-	// 	[
-	// 		{ "key": "selector", "operator": "equal", "operand": "source.stata" }
-	// 	]
-	// },
-	// // Overrides build (run variant)
-	// { "keys": ["ctrl+shift+b"], "command": "stata_execute", "args": {"Mode": "run"}, "context":
-	// 	[
-	// 		{ "key": "selector", "operator": "equal", "operand": "source.stata" }
-	// 	]
-	// },
 	// Help (default windows keys)
 	{ "keys": ["f1"], "command": "stata_help_internal", "context":
 		[

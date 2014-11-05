@@ -46,6 +46,16 @@ class StataAutocompleteVarCommand(sublime_plugin.TextCommand):
 
 		# Three menus: normal ("all"), select one DTA only ("filter"), pick which dta to select ("dta")
 		assert menu in ('all', 'filter', 'dta')
+
+		# Called from keybinding in a line with a -using-
+		if menu=='filter' and filter_dta is None:
+			line = self.view.substr(self.view.line(self.view.sel()[0]))
+			regex = re.search('using "?([^",:*]+)', line)
+			if regex is not None:
+				filter_dta = regex.group(1)
+			else:
+				menu = 'all'
+
 		self.menu = menu
 		self.filter_dta = filter_dta
 
@@ -71,7 +81,7 @@ class StataAutocompleteVarCommand(sublime_plugin.TextCommand):
 		else:
 			self.datasets = dtamap.keys()
 			if not self.datasets: return
-			self.suggestions = [['    ----> Remove filter <----    ', '']] + sorted([d, ' '.join(v)] for d,v in dtamap.items())
+			self.suggestions = [['    ----> Remove filter <----    ', '']] + sorted([d, ' '.join(v if len(v)<9 else v[:9]) + '...' if len(v)>=9 else '' ] for d,v in dtamap.items())
 
 		if prev_choice+1>=len(self.suggestions):
 			prev_choice = -1
