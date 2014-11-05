@@ -193,7 +193,11 @@ class StataLocal(sublime_plugin.TextCommand):
 			word_str = "`"+word_str+"'"
 			self.view.replace(edit,word_sel,word_str)
 
-class StataUpdateExecutablePath(sublime_plugin.ApplicationCommand):
+class StataRegisterAutomationCommand(sublime_plugin.ApplicationCommand):
+	def run(self, **kwargs):
+		os.popen('powershell -command start-process "{}" "/Register" -verb RunAs'.format(stata_fn))
+
+class StataUpdateExecutablePathCommand(sublime_plugin.ApplicationCommand):
 	def run(self, **kwargs):
 
 		def update_settings(fn):
@@ -413,6 +417,7 @@ def launch_stata():
 		win32api.WinExec(stata_fn, win32con.SW_SHOWMINNOACTIVE)
 		sublime.stata = win32com.client.Dispatch ("stata.StataOLEApp")
 	except:
+		sublime.run_command('stata_register_automation')
 		sublime.error_message("StataEditor: Stata Automation type library appears to be unregistered, see http://www.stata.com/automation/#install")
 
 	# Stata takes a while to start and will silently discard commands sent until it finishes starting
