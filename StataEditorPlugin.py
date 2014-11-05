@@ -195,6 +195,7 @@ class StataLocal(sublime_plugin.TextCommand):
 
 class StataRegisterAutomationCommand(sublime_plugin.ApplicationCommand):
 	def run(self, **kwargs):
+		stata_fn = settings.get("stata_path")
 		os.popen('powershell -command start-process "{}" "/Register" -verb RunAs'.format(stata_fn))
 
 class StataUpdateExecutablePathCommand(sublime_plugin.ApplicationCommand):
