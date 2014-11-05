@@ -1,4 +1,24 @@
 [
+	// Autocomplete with the variables of only the relevant dataset, when doing use, merge, etc.
+	{ "keys": ["ctrl+shift+space"], "command": "stata_autocomplete_var", "args":
+		{"menu": "filter"},
+		"context":
+		[
+			{ "key": "selector", "operator": "equal", "operand": "source.stata" },
+			{ "key": "num_selections", "operator": "equal", "operand": 1 },
+			{ "key": "preceding_text", "operator": "regex_contains", "operand": "using[ \t]+" }
+		]
+	},
+	{ "keys": ["ctrl+shift+space"], "command": "stata_autocomplete_var", "args":
+		{"menu": "filter"},
+		"context":
+		[
+			{ "key": "selector", "operator": "equal", "operand": "source.stata" },
+			{ "key": "num_selections", "operator": "equal", "operand": 1 },
+			{ "key": "following_text", "operator": "regex_contains", "operand": "using[ \t]+" }
+		]
+	},
+
 	// Override "autocomplete" when dealing with DTAs
 	{ "keys": ["ctrl+space"], "command": "stata_autocomplete_dta", "context":
 		[
