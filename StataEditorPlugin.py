@@ -53,11 +53,9 @@ class StataAutocompleteVarCommand(sublime_plugin.TextCommand):
 			regex = re.search('using "?([^",:*]+)', line)
 			if regex is not None:
 				filter_dta = regex.group(1)
+				prev_choice = 0
 			else:
 				menu = 'all'
-
-		self.menu = menu
-		self.filter_dta = filter_dta
 
 		# dtamap: dict of dta->varlist
 		# datasets: list of dtas
@@ -66,6 +64,11 @@ class StataAutocompleteVarCommand(sublime_plugin.TextCommand):
 		dtamap = get_autocomplete_data(self.view, add_from_buffer=True, obtain_varnames=True)
 		if dtamap is None:
 			return
+		if filter_dta not in dtamap:
+			menu = 'all'
+
+		self.menu = menu
+		self.filter_dta = filter_dta
 
 		if menu=='all':
 			varlist = defaultdict(list)
