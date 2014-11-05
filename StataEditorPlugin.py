@@ -480,15 +480,16 @@ def get_exe_path():
 	key_found = False
 	for subkey in subkeys:
 		try:
-			key = winreg.OpenKey(reg, r"Applications\StataMP64.exe\shell\open\command")
+			key = winreg.OpenKey(reg, subkey)
 			fn = winreg.QueryValue(key, None).strip('"').split('"')[0]
 			key_found = True
 		except:
+			#print("StataEditor: key not found, searching more;", subkey)
 			pass
 		if key_found:
 			break
 	else:
-		print("Couldn't find path")
+		print("StataEditor: Couldn't find Stata path")
 		settings_fn = 'StataEditor.sublime-settings'
 		settings = sublime.load_settings(settings_fn)
 		fn = settings.get('stata_path', settings.get('stata_path_old', ''))
