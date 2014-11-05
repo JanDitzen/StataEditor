@@ -207,6 +207,10 @@ class StataUpdateExecutablePath(sublime_plugin.ApplicationCommand):
 		def cancel_update():
 			sublime.status_message("Stata path not updated")
 
+		def check_correct():
+			is_correct = check_correct_executable()
+			pass
+
 		fn = get_exe_path()
 		msg ="Enter the path of the Stata executable"
 		sublime.active_window().show_input_panel(msg, fn, update_settings, check_correct, cancel_update)
