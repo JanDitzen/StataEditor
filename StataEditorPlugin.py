@@ -32,6 +32,7 @@ class StataAutocompleteDtaCommand(sublime_plugin.TextCommand):
 		datasets = get_autocomplete_data(self.view, add_from_buffer=True, obtain_varnames=False)
 		if datasets is None:
 			return
+		print(datasets)
 		self.suggestions = sorted( list(zip(*datasets))[1] ) # Tuple (fn, dta name)
 		self.view.window().show_quick_panel(self.suggestions, self.insert_link) #, sublime.MONOSPACE_FONT)
 
