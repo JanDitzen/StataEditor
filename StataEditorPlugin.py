@@ -395,6 +395,9 @@ def launch_stata():
 	stata_fn = settings.get("stata_path")
 	if not check_correct_executable(stata_fn):
 		sublime.run_command('stata_update_executable_path')
+		stata_fn = settings.get("stata_path")
+		if not check_correct_executable(stata_fn):
+			sublime.error_message("Cannot run Stata; the path does not exist: {}".format(stata_fn))
 
 	win32api.WinExec(stata_fn, win32con.SW_SHOWMINNOACTIVE)
 	sublime.stata = win32com.client.Dispatch ("stata.StataOLEApp")
