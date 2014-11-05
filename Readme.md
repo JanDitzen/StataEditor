@@ -4,6 +4,8 @@ Original work by [Mattias Nordin](http://sites.google.com/site/econnordin/)
 
 Fork by [Sergio Correia](http://scorreia.com/)
 
+This is an experimental fork for personal use. It is stable but tread with caution.
+
 * Version 0.5.0
 * Date: November 5, 2014
 
