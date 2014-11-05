@@ -190,14 +190,13 @@ class StataLocal(sublime_plugin.TextCommand):
 			self.view.replace(edit,word_sel,word_str)
 
 class StataUpdateExecutablePath(sublime_plugin.ApplicationCommand):
-	def run(self, args):
+	def run(self, **kwargs):
 		fn = get_exe_path()
 		if fn is None: return
 		settings_fn = 'StataEditor.sublime-settings'
 		settings = sublime.load_settings(settings_fn)
 		settings.set('Debug', fn)
 		sublime.save_settings(settings_fn)
-
 
 # -------------------------------------------------------------
 # Functions for Automation
