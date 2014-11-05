@@ -380,7 +380,7 @@ def get_dta_in_path(view, path):
 def get_variables(datasets):
 	"""Return dict of lists dta:varnames for all datasets"""
 	varlist = dict()
-	sorlist = dict()
+	sortlist = dict()
 	for (fn,dta) in datasets:
 		varlist[dta], sortlist[dta] = get_vars(fn)
 	return varlist, sortlist
@@ -432,6 +432,7 @@ def StataAutomate(stata_command, sync=False):
 def launch_stata():
 	stata_fn = settings.get("stata_path")
 	if not check_correct_executable(stata_fn):
+		print('Stata path not found in settings')
 		sublime.run_command('stata_update_executable_path')
 		return
 

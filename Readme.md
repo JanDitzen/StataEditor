@@ -16,6 +16,7 @@ This package provides the ability to write and run Stata code from Sublime Text 
 * Run only selected code with support for multiple selections
 * Two dozen snippets and completions
 * When the required metadata is set (see _autocomplete_ snippet), allows variable and dataset autocompletion
+* Autocomplete indicates sorting variable
 * Variable autocompletion inspects i) datasets in the metadata paths and ii) generate/egen lines, and is available with ctrl+shift+space
 * Also it selects variables of the relevant dataset when doing use/merge/etc. This takes advantage of the order of the snippets
 * Supports goto-symbol (ctrl+r) for program and block headers (snippet "header")
