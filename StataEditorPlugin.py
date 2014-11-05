@@ -3,7 +3,7 @@
 # -------------------------------------------------------------
 import sublime, sublime_plugin
 import Pywin32.setup, win32com.client, win32con, win32api
-import os, tempfile, subprocess, re, urllib, json, random, time, calendar
+import os, tempfile, subprocess, re, urllib, json, random, time, calendar, winreg
 from collections import defaultdict
 # http://msdn.microsoft.com/en-us/library/windows/desktop/ms633548(v=vs.85).aspx
 
@@ -188,6 +188,16 @@ class StataLocal(sublime_plugin.TextCommand):
 			word_str = self.view.substr(word_sel)
 			word_str = "`"+word_str+"'"
 			self.view.replace(edit,word_sel,word_str)
+
+class StataUpdateExecutablePath(sublime_plugin.ApplicationCommand):
+	def run(self, args):
+		fn = get_exe_path()
+		if fn is None: return
+		settings_fn = 'StataEditor.sublime-settings'
+		settings = sublime.load_settings(settings_fn)
+		settings.set('Debug', fn)
+		sublime.save_settings(settings_fn)
+
 
 # -------------------------------------------------------------
 # Functions for Automation
@@ -384,3 +394,15 @@ def launch_stata():
 			time.sleep(0.1)
 	else:
 		raise IOError('Stata process did not start before timeout')
+
+def get_exe_path():
+	reg = winreg.ConnectRegistry(None,winreg.HKEY_CLASSES_ROOT)
+	try:
+		key = winreg.OpenKey(reg, r"Applications\StataMP64.exe\shell\open\command")
+		fn = winreg.QueryValue(key, None).strip('"').split('"')[0]
+	except:
+		print("Couldn't find path")
+		return
+
+	print(fn)
+	return fn
