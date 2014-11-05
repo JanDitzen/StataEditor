@@ -420,6 +420,7 @@ def launch_stata():
 			sublime.stata.DoCommand('local {}'.format(seed)) # Empty it
 			sublime.stata.DoCommand('cap cls')
 			print("Stata process started (waited {}ms)".format((1+i)/10))
+			sublime.status_message("Stata opened!")
 			break
 		else:
 			time.sleep(0.1)
