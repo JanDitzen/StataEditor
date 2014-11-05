@@ -61,7 +61,7 @@ class StataAutocompleteVarCommand(sublime_plugin.TextCommand):
 		# datasets: list of dtas
 		# varlist: dict of varlist -> datasets
 
-		dtamap = get_autocomplete_data(self.view, add_from_buffer=True, obtain_varnames=True)
+		dtamap, sortlist = get_autocomplete_data(self.view, add_from_buffer=True, obtain_varnames=True)
 		if dtamap is None:
 			return
 		if filter_dta not in dtamap:
@@ -312,6 +312,7 @@ def get_autocomplete_data(view, force_update=False, add_from_buffer=True, obtain
 		# If possible, use results stored in JSON
 		if not autoupdate:
 			variables = data['variables']
+			sortlist = data['sortlist']
 			datasets = data['datasets']
 
 	# Else, first get list of datasets
@@ -328,12 +329,17 @@ def get_autocomplete_data(view, force_update=False, add_from_buffer=True, obtain
 			needs_update = (last_updated<last_modified) or (datasets!=data['datasets'])
 		else:
 			needs_update = True
-		variables = get_variables(datasets) if needs_update else data['variables']
+
+		if needs_update:
+			variables, sortlist = get_variables(datasets)
+		else:
+			variables = data['variables']
+			sortlist = data['sortlist']
 
 	# Save JSON
 	if autoupdate and json_fn and obtain_varnames and needs_update:
 		last_updated = calendar.timegm(time.gmtime())
-		data = {'updated': last_updated, 'datasets': datasets, 'variables': variables}
+		data = {'updated': last_updated, 'datasets': datasets, 'variables': variables, 'sortlist': sortlist}
 		with open(json_fn,'w') as fh:
 			json.dump(data, fh, indent="\t")
 		print('JSON file updated')
@@ -343,12 +349,13 @@ def get_autocomplete_data(view, force_update=False, add_from_buffer=True, obtain
 		if obtain_varnames:
 			if stata_debug: print('Varnames from current file:', get_generates(view))
 			variables[' (current)'] = get_generates(view)
+			sorlist[' (current)'] = []
 		else:
 			datasets.extend(get_saves(view))
 
 	if obtain_varnames:
 		assert variables
-	return (variables if obtain_varnames else datasets)
+	return (variables, sortlist if obtain_varnames else datasets)
 
 def get_datasets(view, paths):
 	return list([fn,dta] for (fn,dta) in set( dta for path in paths for dta in get_dta_in_path(view, path) ))
@@ -371,7 +378,11 @@ def get_dta_in_path(view, path):
 
 def get_variables(datasets):
 	"""Return dict of lists dta:varnames for all datasets"""
-	return {dta:get_vars(fn) for (fn,dta) in datasets}
+	varlist = dict()
+	sorlist = dict()
+	for (fn,dta) in datasets:
+		varlist[dta], sortlist[dta] = get_vars(fn)
+	return varlist, sortlist
 
 def get_vars(fn):
 	# "use in 1" is too slow; just do "desc, varlist" 
@@ -379,10 +390,10 @@ def get_vars(fn):
 	cmd = "describe using {}, varlist"
 	StataAutomate(cmd.format(fn), sync=True)
 	varlist = sublime.stata.StReturnString("r(varlist)")
-	#sortlist = sublime.stata.StReturnString("r(sortlist)")
+	sortlist = sublime.stata.StReturnString("r(sortlist)")
 	#vars = sublime.stata.VariableNameArray()
 	if stata_debug: print('[DTA={}]'.format(fn), varlist)
-	return varlist.split(' ')
+	return varlist.split(' '), sortlist.split(' ')
 
 def get_saves(view):
 	buf = sublime.Region(0, view.size())
