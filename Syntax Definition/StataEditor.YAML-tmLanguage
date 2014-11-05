@@ -5,6 +5,21 @@ fileTypes: [do, ado, doh, mata]
 uuid: 3bf67fa3-ba3c-42ad-b5e8-08c1206530e9
 
 patterns:
+- name: meta.program.stata
+  match: ^\s*(pr|prog|program)\s+(?:(?:def|define)\s+)?(?!drop|list|dir)([A-Za-z_][A-Za-z0-9_]*\s*(,|$))
+
+- name: comment.line.header.stata
+  match: (?<=^)/{2}\s+[^-].*
+
+- name: comment.line.hr.stata
+  match: (?<=^)/{2}\s+[-].*
+
+- name: comment.line.double-slash-1.stata
+  match: (?<=^)/{2}(?! )(?!/).*
+
+- name: comment.line.double-slash-2.stata
+  match: (?<= |\t)/{2}(?!/).*
+  
 - name: comment.line.star.stata
   match: ^\*.*|^\s*\*.*
 

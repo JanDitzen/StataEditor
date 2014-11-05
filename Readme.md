@@ -17,6 +17,7 @@ This package provides the ability to write and run Stata code from Sublime Text 
 * Two dozen snippets and completions
 * When the required metadata is set (see _autocomplete_ snippet), allows variable and dataset autocompletion
 * Variable autocompletion inspects i) datasets in the metadata paths and ii) generate/egen lines, and is available with ctrl+shift+space
+* Supports goto-symbol (ctrl+r) for program and block headers (snippet "header")
 * Dataset autocompletion inspects i) metadata paths and ii) save lines, and is available after _use_ or _using_ keywords, either automatically or with ctrl+space
 * For speed reasons (or if the datasets are not locally available), the autocomplete contents are saved in a JSON file (usually stata-autocomplete.json)
 * Access Stata help files by selecting the command for which you want access to the documentation and press F1 (open help file in Sublime Text) or shft+F1 (open help file in Stata). For the latter option, an internet connection is required.

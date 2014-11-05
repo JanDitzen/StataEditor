@@ -15,6 +15,36 @@
 	<array>
 		<dict>
 			<key>match</key>
+			<string>^\s*(pr|prog|program)\s+(?:(?:def|define)\s+)?(?!drop|list|dir)([A-Za-z_][A-Za-z0-9_]*\s*(,|$))</string>
+			<key>name</key>
+			<string>meta.program.stata</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>(?&lt;=^)/{2}\s+[^-].*</string>
+			<key>name</key>
+			<string>comment.line.header.stata</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>(?&lt;=^)/{2}\s+[-].*</string>
+			<key>name</key>
+			<string>comment.line.hr.stata</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>(?&lt;=^)/{2}(?! )(?!/).*</string>
+			<key>name</key>
+			<string>comment.line.double-slash-1.stata</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>(?&lt;= |\t)/{2}(?!/).*</string>
+			<key>name</key>
+			<string>comment.line.double-slash-2.stata</string>
+		</dict>
+		<dict>
+			<key>match</key>
 			<string>^\*.*|^\s*\*.*</string>
 			<key>name</key>
 			<string>comment.line.star.stata</string>

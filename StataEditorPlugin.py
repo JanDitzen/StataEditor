@@ -205,14 +205,19 @@ def get_cwd(view):
 
 def get_metadata(view):
 	buf = sublime.Region(0, view.size())
-	lines = [view.substr(line).strip() for line in view.split_by_newlines(buf)]
+	lines = (view.substr(line).strip() for line in view.split_by_newlines(buf))
 	lines = [line[2:].strip() for line in lines if line.startswith('*!')]
 	ans = {}
 	for line in lines:
 		key,val = line.split(':', 1)
 		key = key.strip()
+		# Allow dtapath instead of dtapaths
+		if key=='dtapath': key = 'dtapaths'
 		if key not in ans:
 			ans[key] = [cell.strip() for cell in val.split(',')]
+		# Allow repeated 'dtapaths' tags
+		elif key=='dtapaths':
+			ans[key].extend(cell.strip() for cell in val.split(','))
 		else:
 			print("Warning - Repeated autocomplete key:", key)
 	if 'json' in ans: ans['json'] = ans['json'][0]
