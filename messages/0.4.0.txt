@@ -9,3 +9,4 @@ Changes in version 0.4.0:
     *Set syntax settings to YAML. This is then compiled to .tmLanguage with "AAAPackageDev: Convert (Yaml..)"
 	*Added a dozen snippets
 	*Update of the readme file
+    *Easier installation (prompt for filepath, attempt at autodetect; prompt for automation)
