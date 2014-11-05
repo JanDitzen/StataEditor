@@ -16,35 +16,35 @@
                         "children":
                         [
                             {
+                                "caption": "README",
                                 "command": "open_file",
-                                "args": {"file": "${packages}/StataEditor/Readme.mdown"},
-                                "caption": "README"
+                                "args": {"file": "${packages}/StataEditor/Readme.md"}
                             },
                             {
                                 "caption": "-"
                             },
                             {
+                                "caption": "Settings – Default",
                                 "command": "open_file",
-                                "args": {"file": "${packages}/StataEditor/StataEditor.sublime-settings"},
-                                "caption": "Settings – Default"
+                                "args": {"file": "${packages}/StataEditor/StataEditor.sublime-settings"}
                             },
                             {
+                                "caption": "Settings – User",
                                 "command": "open_file",
-                                "args": {"file": "${packages}/User/StataEditor.sublime-settings"},
-                                "caption": "Settings – User"
+                                "args": {"file": "${packages}/User/StataEditor.sublime-settings"}
                             },
                             {
                                 "caption": "-"
                             },
                             {
+                                "caption": "Key Bindings – Default",
                                 "command": "open_file",
-                                "args": {"file": "${packages}/StataEditor/Default (Windows).sublime-keymap"},
-                                "caption": "Key Bindings – Default"
+                                "args": {"file": "${packages}/StataEditor/Default (Windows).sublime-keymap"}
                             },
                             {
+                                "caption": "Key Bindings – User",
                                 "command": "open_file",
-                                "args": {"file": "${packages}/User/Default (Windows).sublime-keymap"},
-                                "caption": "Key Bindings – User"
+                                "args": {"file": "${packages}/User/Default (Windows).sublime-keymap"}
                             }
                         ]
                     }
