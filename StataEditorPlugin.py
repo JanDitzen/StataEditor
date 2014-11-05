@@ -2,7 +2,13 @@
 # Imports and Constants
 # -------------------------------------------------------------
 import sublime, sublime_plugin
-import Pywin32.setup, win32com.client, win32con, win32api
+
+try:
+	import Pywin32.setup, win32com.client, win32con, win32api
+except:
+	sublime.error_message("Install the package Pywin32")
+	raise Exception
+
 import os, tempfile, subprocess, re, urllib, json, random, time, calendar, winreg
 from collections import defaultdict
 # http://msdn.microsoft.com/en-us/library/windows/desktop/ms633548(v=vs.85).aspx
@@ -201,13 +207,12 @@ class StataUpdateExecutablePath(sublime_plugin.ApplicationCommand):
 			if check_correct_executable(fn):
 				if old_fn!=fn:
 					settings.set('stata_path_old', old_fn)
-
 				settings.set('stata_path', fn)
 				sublime.save_settings(settings_fn)
 				sublime.status_message("Stata path updated")
 				launch_stata()
 			else:
-				sublime.error_message("Cannot run Stata; the path does not exist: {}".format(stata_fn))
+				sublime.error_message("Cannot run Stata; the path does not exist: {}".format(fn))
 
 		def cancel_update():
 			sublime.status_message("Stata path not updated")
@@ -406,8 +411,11 @@ def launch_stata():
 	#	if not check_correct_executable(stata_fn):
 	#		sublime.error_message("Cannot run Stata; the path does not exist: {}".format(stata_fn))
 
-	win32api.WinExec(stata_fn, win32con.SW_SHOWMINNOACTIVE)
-	sublime.stata = win32com.client.Dispatch ("stata.StataOLEApp")
+	try:
+		win32api.WinExec(stata_fn, win32con.SW_SHOWMINNOACTIVE)
+		sublime.stata = win32com.client.Dispatch ("stata.StataOLEApp")
+	except:
+		sublime.error_message("Cannot run Stata; register Stata Automation type library: {}".format(fn))
 
 	# Stata takes a while to start and will silently discard commands sent until it finishes starting
 	# Workaround: call a trivial command and see if it was executed (-local- in this case)
