@@ -350,7 +350,7 @@ def get_autocomplete_data(view, force_update=False, add_from_buffer=True, obtain
 		if obtain_varnames:
 			if stata_debug: print('Varnames from current file:', get_generates(view))
 			variables[' (current)'] = get_generates(view)
-			sorlist[' (current)'] = []
+			sortlist[' (current)'] = []
 		else:
 			datasets.extend(get_saves(view))
 
