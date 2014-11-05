@@ -239,8 +239,8 @@ class StataUpdateExecutablePathCommand(sublime_plugin.ApplicationCommand):
 		def cancel_update():
 			sublime.status_message("Stata path not updated")
 
-		def check_correct():
-			is_correct = check_correct_executable()
+		def check_correct(fn):
+			is_correct = check_correct_executable(fn)
 			if is_correct:
 				sublime.status_message("Path is valid")
 			else:
@@ -480,9 +480,9 @@ def get_exe_path():
 		fn = winreg.QueryValue(key, None).strip('"').split('"')[0]
 	except:
 		print("Couldn't find path")
-		return ''
-
-	print(fn)
+		settings_fn = 'StataEditor.sublime-settings'
+		settings = sublime.load_settings(settings_fn)
+		fn = settings.get('stata_path', settings.get('stata_path_old', ''))
 	return fn
 
 def check_correct_executable(fn):
