@@ -389,7 +389,7 @@ def StataAutomate(stata_command, sync=False):
 
 def launch_stata():
 	stata_fn = settings.get("stata_path")
-	if not: check_correct_executable(stata_fn)
+	if not check_correct_executable(stata_fn):
 		sublime.run_command('stata_update_executable_path')
 
 	win32api.WinExec(stata_fn, win32con.SW_SHOWMINNOACTIVE)
