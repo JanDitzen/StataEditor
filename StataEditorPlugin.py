@@ -6,8 +6,11 @@ import sublime, sublime_plugin
 try:
 	import Pywin32.setup, win32com.client, win32con, win32api
 except:
-	sublime.ok_cancel_dialog("[StataEditor - Step 2] Install Pywin32? (click ok, type Pywin32 and press enter)")
-	raise Exception
+	rc = sublime.ok_cancel_dialog("[StataEditor - Step 2] Install Pywin32? (click ok, type Pywin32 and press enter)")
+	if rc:
+		window.run_command('install_package')
+	else:
+		raise Exception
 
 import os, tempfile, subprocess, re, urllib, json, random, time, calendar, winreg
 from collections import defaultdict
