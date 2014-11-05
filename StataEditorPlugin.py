@@ -475,10 +475,19 @@ def launch_stata():
 
 def get_exe_path():
 	reg = winreg.ConnectRegistry(None,winreg.HKEY_CLASSES_ROOT)
-	try:
-		key = winreg.OpenKey(reg, r"Applications\StataMP64.exe\shell\open\command")
-		fn = winreg.QueryValue(key, None).strip('"').split('"')[0]
-	except:
+	subkeys = [r"Applications\StataMP64.exe\shell\open\command",
+	r"Applications\StataMP-64.exe\shell\open\command"]
+	key_found = False
+	for subkey in subkeys:
+		try:
+			key = winreg.OpenKey(reg, r"Applications\StataMP64.exe\shell\open\command")
+			fn = winreg.QueryValue(key, None).strip('"').split('"')[0]
+			key_found = True
+		except:
+			pass
+		if key_found:
+			break
+	else:
 		print("Couldn't find path")
 		settings_fn = 'StataEditor.sublime-settings'
 		settings = sublime.load_settings(settings_fn)
