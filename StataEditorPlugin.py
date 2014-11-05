@@ -204,6 +204,11 @@ class StataUpdateExecutablePath(sublime_plugin.ApplicationCommand):
 			sublime.save_settings(settings_fn)
 			sublime.status_message("Stata path updated")
 
+			if check_correct_executable(fn):
+				launch_stata()
+			else:
+				sublime.error_message("Cannot run Stata; the path does not exist: {}".format(stata_fn))
+
 		def cancel_update():
 			sublime.status_message("Stata path not updated")
 
@@ -395,9 +400,11 @@ def launch_stata():
 	stata_fn = settings.get("stata_path")
 	if not check_correct_executable(stata_fn):
 		sublime.run_command('stata_update_executable_path')
-		stata_fn = settings.get("stata_path")
-		if not check_correct_executable(stata_fn):
-			sublime.error_message("Cannot run Stata; the path does not exist: {}".format(stata_fn))
+		return
+
+	#	stata_fn = settings.get("stata_path")
+	#	if not check_correct_executable(stata_fn):
+	#		sublime.error_message("Cannot run Stata; the path does not exist: {}".format(stata_fn))
 
 	win32api.WinExec(stata_fn, win32con.SW_SHOWMINNOACTIVE)
 	sublime.stata = win32com.client.Dispatch ("stata.StataOLEApp")
