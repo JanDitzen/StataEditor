@@ -79,8 +79,9 @@ class StataAutocompleteVarCommand(sublime_plugin.TextCommand):
 			if not varlist: return
 			self.suggestions = [['    ----> Select this to filter by dataset <----    ','']] + list( [v, ' '.join(d) if len(d) < 5 else d[0] + ' and {} other files'.format(len(d)-1)] for v,d in varlist.items() )
 		elif menu=='filter':
-			varlist = sorted(dtamap[filter_dta])
 			sorts = sortlist[filter_dta]
+			#varlist = sorted(dtamap[filter_dta])
+			varlist = sorted(dtamap[filter_dta], key=lambda x: (x not in sorts, x))
 			if not varlist: return
 			self.suggestions = ['    ----> Variables in {} <----    '.format(filter_dta)] + [var + f(var) for var in varlist]
 		else:
