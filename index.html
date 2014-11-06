@@ -123,6 +123,11 @@
 <p>Technical note: a header comment is just a line that starts with "// " (nothing before the slashes, and a space after them).</p>
 
 <h3>
+<a id="help" class="anchor" href="#help" aria-hidden="true"><span class="octicon octicon-link"></span></a>Help</h3>
+
+<p>Pressing the F1 key will search for the help file of any selected word and try to open it in Sublime Text. Pressing shift+F1 will do the same but opening it in the Stata Viewer.</p>
+
+<h3>
 <a id="autocompletion" class="anchor" href="#autocompletion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Autocompletion</h3>
 
 <h4>
@@ -214,9 +219,36 @@
 
 <p>To see all available commands, you can either use the menu (Tools - Stata) or the Command Palette (ctrl+shift+p, then type "stata:"):</p>
 
-<p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/Menu.png?raw=True" alt="Menu"></p>
+<p><em>Menu Bar</em>
+<img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/Menu.png?raw=True" alt="Menu"></p>
 
-<p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/Palette.png?raw=True" alt="Palette"></p>
+<p><em>Command Palette</em>
+<img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/Palette.png?raw=True" alt="Palette"></p>
+
+<h2>
+<a id="known-issues-taken-from-mattias-readmemd" class="anchor" href="#known-issues-taken-from-mattias-readmemd" aria-hidden="true"><span class="octicon octicon-link"></span></a>Known issues (taken from Mattias' Readme.md)</h2>
+
+<h3>
+<a id="orphan-stata-window-after-closing" class="anchor" href="#orphan-stata-window-after-closing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Orphan Stata Window After Closing</h3>
+
+<p>The development of this package is still in beta and may contain bugs, so use at your own risk and make sure you backup your data. When running code from ST3, a new instance of Stata is opened. If you close ST3, then that instance will also close, though it may take around five minutes before that happens. Note that Stata will not ask you whether you want to save the data but will close without warning. <strong>Therefore, do not use an instance of Stata that has been launched from ST3 after ST3 has been closed, as you would risk loosing your unsaved work.</strong> This is true even if you re-launch ST3 as the connection to the old instance of Stata will have been permanently broken. Please let me know if you detect any other bugs or if you have requests for additional featuers. You can contact me at mnordin [at] gmx [dot] com.</p>
+
+<h3>
+<a id="encoding" class="anchor" href="#encoding" aria-hidden="true"><span class="octicon octicon-link"></span></a>Encoding</h3>
+
+<p>If you write Stata code containing non-ASCII characters in ST3, you may notice that these characters have been replaced with nonsense when you open the file in Stata's native do-file editor. This is because Stata and ST3 use different encodings. To avoid this issue, you can save your file with a different encoding in ST3. To do so, open File -&gt; Save with encoding, and choose the appropriate encoding. Which encoding is right for you I would imagine depends on your Stata distribution. For most users in Europe and the U.S. you would probably get the correct result by choosing Western (Windows 1252). If that doesn't work, try saving with other encodings.</p>
+
+<h2>
+<a id="missing-features" class="anchor" href="#missing-features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Missing Features</h2>
+
+<ul>
+<li>OSX Support (easy/medium)</li>
+<li>Linux Support (hard?)</li>
+<li>Allow variable autocompletion based on what has been currently typed (medium)</li>
+<li>Fix "build when selecting". Currently every build expands the selected lines by one (hard)</li>
+<li>Display message in red when sublime closes to warn anyone using the Stata window that it will be closed (very hard)</li>
+<li>Interact with a remote Stata session via either Remote Desktop or an SSH Terminal (very hard)</li>
+</ul>
 
 <h2>
 <a id="acknowledgements" class="anchor" href="#acknowledgements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Acknowledgements</h2>
@@ -231,6 +263,8 @@
 <li>The original TextMate plugin by Timothy Beatty, currently maintained by <a href="http://bylr.net/3/2010/10/stata-bundle-for-textmate/">Dan Byler</a>
 </li>
 </ul>
+
+<p>Thanks to Adrian Adermon and Daniel Forchheimer for helpful suggestions.</p>
 
 <p>Suggestions, code contributions, and pull requests <a href="mailto:sergio.correia@gmail.com">are greatly appreciated</a>!</p>
       </section>
