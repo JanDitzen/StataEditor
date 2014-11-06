@@ -30,6 +30,10 @@ This package provides the ability to write and run Stata code from Sublime Text 
 * Load a new Stata dataset by selecting a path and pressing ctrl + shift + u (Equivalent to the command "use 'path', clear"). Please, note that your current work will then be lost, so remember to save your dataset!
 * Plus all other features that come with ST3!
 
+Misc:
+
+* Added menu and tutorial link
+
 Requirements and Setup
 ----------------------
 This package only works on Windows machines. To use Stata with Sublime Text on OS X, try [Stata Enhanced](https://sublime.wbond.net/packages/Stata%20Enhanced). StataEditor has been tested on Sublime Text 3 together with Stata 13-MP on Windows 7 and Windows 8. I have very briefly tested it on Stata 11 and Stata 12 and it seems to be working, but more testing is needed.

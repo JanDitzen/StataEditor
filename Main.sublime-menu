@@ -1,10 +1,14 @@
 [
     {
+        "caption": "Tools",
+        "mnemonic": "T",
         "id": "tools",
         "children":
         [
             {
                 "caption": "Stata",
+                "id": "root",
+                "mnemonic": "S",
                 "children":
                 [
                     {
