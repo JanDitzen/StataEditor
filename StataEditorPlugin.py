@@ -66,7 +66,7 @@ class StataAutocompleteVarCommand(sublime_plugin.TextCommand):
 			return
 		if menu=='filter' and filter_dta not in dtamap:
 			if filter_dta:
-				print('Stata: <{}> not found in'.format(filter_dta), list(dtamap.keys()))
+				print('[Stata] Note: <{}> not found in'.format(filter_dta), list(dtamap.keys()))
 			menu = 'all'
 
 		self.menu = menu
@@ -410,14 +410,12 @@ def get_variables(datasets):
 	return varlist, sortlist
 
 def get_vars(fn):
-	# "use in 1" is too slow; just do "desc, varlist" 
-	#cmd = """use "{}" in 1, clear nolabel""" 
 	cmd = "describe using {}, varlist"
 	StataAutomate(cmd.format(fn), sync=True)
 	varlist = sublime.stata.StReturnString("r(varlist)")
 	sortlist = sublime.stata.StReturnString("r(sortlist)")
-	#vars = sublime.stata.VariableNameArray()
 	if stata_debug: print('[DTA={}]'.format(fn), varlist)
+	StataAutomate("cap cls") # Try to clean up
 	return varlist.split(' '), sortlist.split(' ')
 
 def get_saves(view):
@@ -429,12 +427,26 @@ def get_saves(view):
 	return ans
 
 def get_generates(view):
+
+	# 1) First infer variables from current code
+
 	buf = sublime.Region(0, view.size())
 	# Only accepts gen|generate|egen (the most common ones) and only the common numeric types
 	pat = '''^[ \t]*(?:gen|generate|egen)[ \t]+(?:(?:byte|int|long|float|double)[ \t]+)?([a-zA-Z0-9_`']+)[ \t]*='''
 	source = view.substr(buf)
 	regex = re.findall(pat, source, re.MULTILINE)
-	return list(set(regex))
+	ans = set(regex)
+
+	# 2) Then, add variables from current Stata session
+
+	if settings.get("variable_completions") == True:
+		try:
+			varlist = sublime.stata.VariableNameArray()
+		except:
+			print("[Stata] Note: couldn't obtain varlist from current Stata window")
+	ans.update(varlist)
+
+	return list(ans)
 
 # -------------------------------------------------------------
 # Functions for Talking to Stata
