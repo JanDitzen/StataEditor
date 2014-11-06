@@ -64,7 +64,7 @@ class StataAutocompleteVarCommand(sublime_plugin.TextCommand):
 		dtamap, sortlist = get_autocomplete_data(self.view, add_from_buffer=True, obtain_varnames=True)
 		if dtamap is None:
 			return
-		if filter_dta not in dtamap:
+		if menu=='filter' and filter_dta not in dtamap:
 			menu = 'all'
 
 		self.menu = menu
