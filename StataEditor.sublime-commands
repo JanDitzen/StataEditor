@@ -22,5 +22,9 @@
     {
         "caption": "Stata: Register Stata Automation",
         "command": "stata_register_automation"
+    },
+    {
+        "caption": "Stata: Tutorial",
+        "command": "stata_open_tutorial"
     }
 ]

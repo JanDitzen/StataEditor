@@ -59,6 +59,10 @@
                                 "args": {"file": "${packages}/StataEditor/Readme.md"}
                             },
                             {
+                                "caption": "Tutorial",
+                                "command": "stata_open_tutorial"
+                            },
+                            {
                                 "caption": "-"
                             },
                             {

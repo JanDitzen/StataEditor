@@ -7,7 +7,7 @@ try:
 except:
 	sublime.message_dialog("StataEditor not loaded - Need Pywin32 package")
 	raise Exception
-import os, tempfile, subprocess, re, urllib, json, random, time, calendar, winreg
+import os, tempfile, subprocess, re, urllib, json, random, time, calendar, winreg, webbrowser
 from collections import defaultdict
 # http://msdn.microsoft.com/en-us/library/windows/desktop/ms633548(v=vs.85).aspx
 
@@ -249,6 +249,12 @@ class StataUpdateExecutablePathCommand(sublime_plugin.ApplicationCommand):
 		fn = get_exe_path()
 		msg ="StataEditor: Enter the path of the Stata executable"
 		sublime.active_window().show_input_panel(msg, fn, update_settings, check_correct, cancel_update)
+
+class StataOpenTutorialCommand(sublime_plugin.ApplicationCommand):
+	def run(self, **kwargs):
+		url = "https://sergiocorreia.github.io/StataEditor"
+		webbrowser.open_new_tab(url)
+
 
 
 # -------------------------------------------------------------
