@@ -65,6 +65,8 @@ class StataAutocompleteVarCommand(sublime_plugin.TextCommand):
 		if dtamap is None:
 			return
 		if menu=='filter' and filter_dta not in dtamap:
+			if filter_dta:
+				print('Stata: <{}> not found in'.format(filter_dta), list(dtamap.items()))
 			menu = 'all'
 
 		self.menu = menu
@@ -396,7 +398,7 @@ def get_dta_in_path(view, path):
 	if not os.path.isdir(path): return []
 	# full file path, file name used in stata ($; no .dta)
 	ans = [fn for fn in os.listdir(path) if fn.endswith('.dta')]
-	ans = [ (os.path.join(path,fn), (nick if nick else path) + '/' + fn[:-4]) for fn in ans]
+	ans = [ ( os.path.join(path,fn), nick + '/' + fn[:-4]) for fn in ans]
 	return ans
 
 def get_variables(datasets):
