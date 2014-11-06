@@ -105,8 +105,9 @@
 
 <p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/snippet-example.png?raw=True" alt="Snippet Example"></p>
 
-<p>To see all available snippets, press "snip" in the Command Palette or go to Tools - Snippets.
-<img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/snippet-palette.png?raw=True" alt="Snippet Palette"></p>
+<p>To see all available snippets, press "snip" in the Command Palette or go to Tools - Snippets.</p>
+
+<p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/snippet-palette.png?raw=True" alt="Snippet Palette"></p>
 
 <p>Snippets are "intelligent" and allow to be completed in order, indicating variables, options, etc. Within a snippet, press Tab to go to the next value:</p>
 
@@ -117,29 +118,30 @@
 
 <p>You can jump to different sections of the do-file with the ctrl+g shortcut. Currently, it recognizes program declarations and "header comments". To insert a header comment, use the "header" snippet (type "head", then Tab).</p>
 
-<p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/Goto.png?raw=True" alt="Goto">
-Technical note: a header comment is just a line that starts with "// " (nothing before the slashes, and a space after them).</p>
+<p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/Goto.png?raw=True" alt="Goto"></p>
+
+<p>Technical note: a header comment is just a line that starts with "// " (nothing before the slashes, and a space after them).</p>
 
 <h3>
 <a id="autocompletion" class="anchor" href="#autocompletion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Autocompletion</h3>
 
 <h4>
-<a id="setup-autocomplete-snippet" class="anchor" href="#setup-autocomplete-snippet" aria-hidden="true"><span class="octicon octicon-link"></span></a>Setup: Autocomplete Snippet</h4>
+<a id="using-the-autocomplete-snippet" class="anchor" href="#using-the-autocomplete-snippet" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using the Autocomplete Snippet</h4>
 
-<ol>
+<ul>
 <li>Save the file if it is still untitled.</li>
-<li>Use the "autocomplete" snippet ("auto", Tab) to insert the required comments.
-<img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/autocomplete-1.png?raw=True" alt="Autocomplete Snippet">
-</li>
-</ol>
+<li>Use the "autocomplete" snippet ("auto", Tab) to insert the required comments.</li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/autocomplete-1.png?raw=True" alt="Autocomplete Snippet"></p>
 
 <p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/autocomplete-2.png?raw=True" alt="Autocomplete Snippet"></p>
 
-<ol>
-<li>Change the dtapaths line. Just type one or more folders followed by commas.
-<img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/autocomplete-3.png?raw=True" alt="Autocomplete Snippet">
-</li>
-</ol>
+<ul>
+<li>Change the dtapaths line. Just type one or more folders followed by commas.</li>
+</ul>
+
+<p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/autocomplete-3.png?raw=True" alt="Autocomplete Snippet"></p>
 
 <p>The dtapaths line can be customizable:</p>
 
@@ -149,9 +151,10 @@ Technical note: a header comment is just a line that starts with "// " (nothing 
 <li>Quotes are optional.</li>
 <li>If the line is too long, you can use multiple lines; just start each line with "*! dtapaths: "</li>
 <li>Nicknames: If in the code you have set something like <em>global TEST=C:/MyData/TestData</em>, which you then use in strings like "$TEST/SomeDataset" you can use a nickname to refer to a folder. For instance, <em>$TEST=C:/MyData/Final</em> instead of just <em>C:/MyData/Final</em>
-<img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/autocomplete-4.png?raw=True" alt="Autocomplete Snippet">
 </li>
 </ul>
+
+<p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/autocomplete-4.png?raw=True" alt="Autocomplete Snippet"></p>
 
 <h4>
 <a id="dataset-autocompletion" class="anchor" href="#dataset-autocompletion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dataset Autocompletion</h4>
@@ -163,42 +166,53 @@ Technical note: a header comment is just a line that starts with "// " (nothing 
 <h4>
 <a id="variable-autocompletion" class="anchor" href="#variable-autocompletion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Variable Autocompletion</h4>
 
-<p>Press ctrl+shift+space anywhere in the do file:
-<img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/var-all.png?raw=True" alt="Variable Autocompletion - All"></p>
+<p>Press ctrl+shift+space anywhere in the do file:</p>
+
+<p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/var-all.png?raw=True" alt="Variable Autocompletion - All"></p>
 
 <p>Select all the variables that you want and press Esc to exit the menu.</p>
 
-<p>The first option allows you to filter by dataset:
-<img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/var-dta.png?raw=True" alt="Variable Autocompletion - Dta"></p>
+<p>The first option allows you to filter by dataset:</p>
 
-<p>Notice the "(current)" dataset. It has all the variables generated with <em>gen</em> and <em>egen</em>, as well as the ones in the dataset currently open in Stata.
-<img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/var-current.png?raw=True" alt="Variable Autocompletion - Current"></p>
+<p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/var-dta.png?raw=True" alt="Variable Autocompletion - Dta"></p>
 
-<p>When filtering by a saved dataset, the variables that sort the dataset will be shown first and a * will be next to them:
-<img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/var-filter.png?raw=True" alt="Variable Autocompletion - Filter"></p>
+<p>Notice the "(current)" dataset. It has all the variables generated with <em>gen</em> and <em>egen</em>, as well as the ones in the dataset currently open in Stata.</p>
+
+<p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/var-current.png?raw=True" alt="Variable Autocompletion - Current"></p>
+
+<p>When filtering by a saved dataset, the variables that sort the dataset will be shown first and a * will be next to them:</p>
+
+<p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/var-filter.png?raw=True" alt="Variable Autocompletion - Filter"></p>
 
 <h3>
 <a id="example-autocompletion--snippets--fun" class="anchor" href="#example-autocompletion--snippets--fun" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example: Autocompletion + Snippets = Fun</h3>
 
-<p>Select <em>uselong</em> snippet
-<img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/use-1.png?raw=True" alt="Use1"></p>
+<p>Select the <em>uselong</em> snippet</p>
 
-<p>It will move the caret exactly where you want.
-<img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/use-2.png?raw=True" alt="Use2"></p>
+<p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/use-1.png?raw=True" alt="Use1"></p>
 
-<p>Now press ctrl+space, and select the dataset from the list of avaiable datasets
-<img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/use-3.png?raw=True" alt="Use3"></p>
+<p>It will move the caret exactly where you want.</p>
+
+<p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/use-2.png?raw=True" alt="Use2"></p>
+
+<p>Now press ctrl+space, and select the dataset from the list of avaiable datasets</p>
+
+<p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/use-3.png?raw=True" alt="Use3"></p>
 
 <p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/use-4.png?raw=True" alt="Use4"></p>
 
-<p>Now press Tab to move the caret to the varlist, and press ctrl+shift+space. Notice that the <em>using</em> dataset will be automatically selected!
-<img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/use-5.png?raw=True" alt="Use5"></p>
+<p>Now press Tab to move the caret to the varlist, and press ctrl+shift+space. Notice that the <em>using</em> dataset will be automatically selected!</p>
 
-<p>Add as many variables as you want. Remember that the ones prefixed by a * are sorting the data.
-<img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/use-6.png?raw=True" alt="Use6"></p>
+<p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/use-5.png?raw=True" alt="Use5"></p>
+
+<p>Add as many variables as you want. Remember that the ones prefixed by a * are sorting the data.</p>
+
+<p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/use-6.png?raw=True" alt="Use6"></p>
 
 <h3>
 <a id="available-commands" class="anchor" href="#available-commands" aria-hidden="true"><span class="octicon octicon-link"></span></a>Available Commands</h3>
+
+<p>To see all available commands, you can either use the menu (Tools - Stata) or the Command Palette (ctrl+shift+p, then type "stata:"):</p>
 
 <p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/Menu.png?raw=True" alt="Menu"></p>
 
@@ -207,9 +221,9 @@ Technical note: a header comment is just a line that starts with "// " (nothing 
 <h2>
 <a id="acknowledgements" class="anchor" href="#acknowledgements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Acknowledgements</h2>
 
-<p>This is a fork by <a href="@sergiocorreia">Sergio Correia</a> of the project by <a href="http://sites.google.com/site/econnordin/">Mattias Nordin</a>.</p>
+<p>This is a fork by <a href="@sergiocorreia">Sergio Correia</a> of the StataEditor project created by <a href="http://sites.google.com/site/econnordin/">Mattias Nordin</a>.</p>
 
-<p>In addition, several other projects have been heavily influential:</p>
+<p>It is heavily influenced by several other projects:</p>
 
 <ul>
 <li>SublimeStataEnhanced by <a href="@andrewheiss">Andrew Heiss</a>
