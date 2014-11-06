@@ -56,23 +56,27 @@
 
 <ul>
 <li>Install <a href="https://sublime.wbond.net/installation">Package Control</a> if not installed</li>
-<li>Install the Pywin32 package (to install a package: within Sublime Text, press ctrl+shift+p, type "install", type the package name, and select it).</li>
-<li>Add repository: ctrl+shift+p, type "add repo", and enter <a href="https://github.com/sergiocorreia/StataEditor">https://github.com/sergiocorreia/StataEditor</a>
+<li>Install the Pywin32 package. Note: to install a package, go to the Command Palette in Sublime Text (ctrl+shift+p), type "install", type the package name, and select it.</li>
+<li>Add this repository: ctrl+shift+p, type "add repo", and enter <a href="https://github.com/sergiocorreia/StataEditor">https://github.com/sergiocorreia/StataEditor</a>
 </li>
 <li>Install the StataEditor package.</li>
-<li>Optional: Set the Stata Path: ctrl+shift+p, type "stata path" (or use the Tools - Stata menu) and enter the path as seen in the image <img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/set-path.png?raw=True" alt="Stata Path">. If this step is skipped, StataEditor will just try to find it, and ask if it fails.</li>
-<li>Optional: Register the <em>Stata Automation type library</em>: ctrl+shift+p, "stata register", and accept the Windows Prompt. In case of an error, see the <a href="http://www.stata.com/automation/#createmsapp">manual instructions</a>. If this step is skipped, StataEditor will try to run it when required.</li>
+<li>
+<em>(Optional)</em> Set the Stata Path: ctrl+shift+p, type "stata path" (or use the Tools - Stata menu) and enter the path as seen in the image at the end. If this step is skipped, StataEditor will just try to find it, and ask if it fails.</li>
+<li>
+<em>(Optional)</em> Register the <em>Stata Automation type library</em>: ctrl+shift+p, "stata register", and accept the Windows Prompt. In case of an error, see the <a href="http://www.stata.com/automation/#createmsapp">manual instructions</a>. If this step is skipped, StataEditor will try to run it when required.</li>
 </ul>
+
+<p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/set-path.png?raw=True" alt="Stata Path"></p>
 
 <h2>
 <a id="using-stata" class="anchor" href="#using-stata" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using Stata</h2>
 
 <h3>
-<a id="example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h3>
+<a id="quick-overview" class="anchor" href="#quick-overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Quick Overview</h3>
 
 <ul>
-<li>Create a new file, and save it with a .do extension. It will recognize the Stata syntax in the lower left corner</li>
-<li>To run the Do-File in Stata, press ctrl+b or go to Tools - Buil</li>
+<li>Create a new file, and save it with a .do extension. This will activate the Stata syntax highlighting.</li>
+<li>To run the do-file in Stata, press ctrl+b or go to Tools - Build</li>
 <li>To use snippets, press Tab or Enter when it starts autocompleting. To see all snippets, type "snip:" in the Command Palette (ctrl+shift+p)</li>
 <li>To set up autocompletion, type "auto" and then Tab. Then fill the dtapaths line with e.g. "C:/MyData/"</li>
 <li>To insert a dataset name, press ctrl+space when in the correct line (e.g. in a use/merge/append/etc)</li>
@@ -81,20 +85,25 @@
 </ul>
 
 <h3>
-<a id="key-features" class="anchor" href="#key-features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Key Features</h3>
+<a id="syntax-highlighting" class="anchor" href="#syntax-highlighting" aria-hidden="true"><span class="octicon octicon-link"></span></a>Syntax Highlighting</h3>
 
-<p>To use the Stata package and syntax highlighting, save as a Stata type (.do .ado .mata), click on the lower right corner, or type "syntax: stata" in the Command Palette</p>
+<p>To use the Stata package and syntax highlighting, you can either i) save the file as a Stata type (.do .ado .mata), ii) click on the lower right corner, or iii) type "syntax: stata" in the Command Palette</p>
 
 <p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/SyntaxSmall.png?raw=True" alt="Syntax Highlighting"></p>
 
-<p>To do or run the file, press ctrl+b (do) or ctrl+shift+b (run), or go to the Build menu. Note that <em>building</em> a file is the Sublime Text equivalent of <em>do</em> and <em>run</em> in Stata.
-<img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/Build.png?raw=True" alt="Build Menu"></p>
+<h3>
+<a id="executing-code" class="anchor" href="#executing-code" aria-hidden="true"><span class="octicon octicon-link"></span></a>Executing Code</h3>
+
+<p>To do or run the file, press ctrl+b (do) or ctrl+shift+b (run), or go to the Build menu. Note that <em>building</em> a file is the Sublime Text equivalent of <em>do</em> and <em>run</em> in Stata.</p>
+
+<p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/Build.png?raw=True" alt="Build Menu"></p>
 
 <h3>
 <a id="snippets" class="anchor" href="#snippets" aria-hidden="true"><span class="octicon octicon-link"></span></a>Snippets</h3>
 
-<p>To use a snippet, just start writing it and then press Tab:
-<img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/snippet-example.png?raw=True" alt="Snippet Example"></p>
+<p>To use a snippet, just start writing it and then press Tab:</p>
+
+<p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/snippet-example.png?raw=True" alt="Snippet Example"></p>
 
 <p>To see all available snippets, press "snip" in the Command Palette or go to Tools - Snippets.
 <img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/snippet-palette.png?raw=True" alt="Snippet Palette"></p>
@@ -108,7 +117,8 @@
 
 <p>You can jump to different sections of the do-file with the ctrl+g shortcut. Currently, it recognizes program declarations and "header comments". To insert a header comment, use the "header" snippet (type "head", then Tab).</p>
 
-<p>Technical note: a header comment is just a line that starts with "// " (nothing before the slashes, and a space after them).</p>
+<p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/Goto.png?raw=True" alt="Goto">
+Technical note: a header comment is just a line that starts with "// " (nothing before the slashes, and a space after them).</p>
 
 <h3>
 <a id="autocompletion" class="anchor" href="#autocompletion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Autocompletion</h3>
