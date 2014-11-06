@@ -301,7 +301,8 @@ def get_autocomplete_data(view, force_update=False, add_from_buffer=True, obtain
 			
 	cwd = get_cwd(view)
 	if cwd is None:
-		return (None, None)
+		sublime.error_message("Save the file to use autocompletion")
+		return (None, None) if obtain_varnames else None
 		
 	metadata = get_metadata(view)
 	paths = metadata.get('dtapaths', [])
@@ -335,6 +336,7 @@ def get_autocomplete_data(view, force_update=False, add_from_buffer=True, obtain
 		#assert datasets # Bugbug
 		if not datasets:
 			sublime.error_message("No datasets found in the paths " + str(paths) )
+			return (None, None)
 
 		if json_exists and not force_update:
 			last_updated = data['updated']
