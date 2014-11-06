@@ -1,36 +1,51 @@
 <!DOCTYPE html>
 <html>
-
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Sublime Text Plugin: StataEditor : Sublime Text and Stata Integration">
+    <meta name="viewport" content="width=640">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <link rel="stylesheet" href="stylesheets/core.css" media="screen">
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
 
-    <title>Sublime Text Plugin: StataEditor</title>
+    <script type="text/javascript" src="javascripts/modernizr.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#main_content').headsmart()
+      })
+    </script>
+    <title>Sublime Text Plugin: StataEditor by sergiocorreia</title>
   </head>
 
   <body>
+    <a id="forkme_banner" href="https://github.com/sergiocorreia/StataEditor">View on GitHub</a>
+    <div class="shell">
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/sergiocorreia/StataEditor">View on GitHub</a>
+      <header>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <h1>Sublime Text Plugin: StataEditor</h1>
+            <h2>Sublime Text and Stata Integration</h2>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+      </header>
 
-          <h1 id="project_title">Sublime Text Plugin: StataEditor</h1>
-          <h2 id="project_tagline">Sublime Text and Stata Integration</h2>
+      <section id="downloads">
+        <span class="inner">
+          <a href="https://github.com/sergiocorreia/StataEditor/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/sergiocorreia/StataEditor/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+        </span>
+      </section>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/sergiocorreia/StataEditor/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/sergiocorreia/StataEditor/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
+      <span class="banner-fix"></span>
+
+
+      <section id="main_content">
         <h1>
 <a id="sublime-text-and-stata-integration" class="anchor" href="#sublime-text-and-stata-integration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sublime Text and Stata Integration</h1>
 
@@ -266,14 +281,19 @@
 
 <p>Suggestions, code contributions, and pull requests <a href="mailto:sergio.correia@gmail.com">are greatly appreciated</a>!</p>
       </section>
-    </div>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Sublime Text Plugin: StataEditor maintained by <a href="https://github.com/sergiocorreia">sergiocorreia</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      <footer>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <p>this project by <a href="https://github.com/sergiocorreia">sergiocorreia</a> can be found on <a href="https://github.com/sergiocorreia/StataEditor">GitHub</a></p>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+        <p>Generated with <a href="http://pages.github.com">GitHub Pages</a> using Merlot</p>
+        <span class="octocat"></span>
       </footer>
+
     </div>
 
               <script type="text/javascript">
@@ -286,7 +306,6 @@
             pageTracker._trackPageview();
             } catch(err) {}
           </script>
-
 
   </body>
 </html>
