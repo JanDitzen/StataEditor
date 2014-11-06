@@ -1,53 +1,91 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Stata Editor by sergiocorreia</title>
+    <meta name="description" content="Stata Editor : Sublime Text and Stata Integration">
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Stata Editor</title>
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
-        <h1>Stata Editor</h1>
-        <p>Sublime Text and Stata Integration</p>
 
-        <p class="view"><a href="https://github.com/sergiocorreia/StataEditor">View the Project on GitHub <small>sergiocorreia/StataEditor</small></a></p>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/sergiocorreia/StataEditor">View on GitHub</a>
 
+          <h1 id="project_title">Stata Editor</h1>
+          <h2 id="project_tagline">Sublime Text and Stata Integration</h2>
 
-        <ul>
-          <li><a href="https://github.com/sergiocorreia/StataEditor/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/sergiocorreia/StataEditor/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/sergiocorreia/StataEditor">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/sergiocorreia/StataEditor/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/sergiocorreia/StataEditor/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h1>
 <a id="sublime-text-and-stata-integration" class="anchor" href="#sublime-text-and-stata-integration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sublime Text and Stata Integration</h1>
 
 <p>StataEditor is a Sublime Text 3 plugin that integrates closely with Stata. It allows you to use Sublime Text's main features (syntax highlighting, autocompletion, snippets, build systems, goto symbols, etc.) interactively with Stata, so you can fully use the advantages Sublime's workflow in Stata.</p>
 
 <h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<h3>
+<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h3>
+
+<ul>
+<li>
+<a href="http://www.stata.com/">Stata 13</a> (should work up to Stata 11)</li>
+<li><a href="http://www.sublimetext.com/3">Sublime Text 3</a></li>
+<li>Windows (it should be straightforward to add this for OSX using <a href="@andrewheiss">Andrew Heiss's</a> work; not sure about Linux)</li>
+</ul>
+
+<h3>
+<a id="installation-1" class="anchor" href="#installation-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h3>
+
+<ul>
+<li>Install <a href="https://sublime.wbond.net/installation">Package Control</a> if not installed</li>
+<li>Install the Pywin32 package (to install a package: within Sublime Text, press ctrl+shift+p, type "install", type the package name, and select it).</li>
+<li>Add repository: ctrl+shift+p, type "add repo", and enter <a href="https://github.com/sergiocorreia/StataEditor">https://github.com/sergiocorreia/StataEditor</a>
+</li>
+<li>Install the StataEditor package.</li>
+<li>Optional: Set the Stata Path: ctrl+shift+p, type "stata path" (or use the Tools - Stata menu). If this step is skipped, StataEditor will just try to find it, and ask if it fails.</li>
+<li>Optional: Register the <em>Stata Automation type library</em>: ctrl+shift+p, "stata register", and accept the Windows Prompt. In case of an error, see the <a href="http://www.stata.com/automation/#createmsapp">manual instructions</a>. If this step is skipped, StataEditor will try to run it when required.</li>
+</ul>
+
+<h2>
+<a id="using-stata" class="anchor" href="#using-stata" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using Stata</h2>
+
+<h3>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h3>
+
+<p>Create a new file, and save it with a .do extension. It will recognize the Stata syntax in the lower left corner</p>
+
+<h2>
 <a id="acknowledgements" class="anchor" href="#acknowledgements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Acknowledgements</h2>
 
-<p>This is a fork by <a href="http://scorreia.com/">Sergio Correia</a> of the project by <a href="http://sites.google.com/site/econnordin/">Mattias Nordin</a>.</p>
+<p>mattiasnordin
+This is a fork by <a href="@sergiocorreia">Sergio Correia</a> of the project by <a href="http://sites.google.com/site/econnordin/">Mattias Nordin</a>.</p>
 
 <p>In addition, several other projects have been heavily influential:</p>
 
 <ul>
-<li>SublimeStataEnhanced by <a href="http://www.andrewheiss.com/">Andrew Heiss</a>
+<li>SublimeStataEnhanced by <a href="@andrewheiss">Andrew Heiss</a>
 </li>
 <li>The original TextMate plugin by Timothy Beatty, currently maintained by <a href="http://bylr.net/3/2010/10/stata-bundle-for-textmate/">Dan Byler</a>
 </li>
 </ul>
 
-<p>Suggestions, code contributions, and pull requests <a href="sergio.correia@gmail.com">are greatly appreciated</a>!</p>
+<p>Suggestions, code contributions, and pull requests <a href="mailto:sergio.correia@gmail.com">are greatly appreciated</a>!</p>
 
 <p>This </p>
 
@@ -85,12 +123,16 @@ $ git checkout gh-pages
 
 <p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
       </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/sergiocorreia">sergiocorreia</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Stata Editor maintained by <a href="https://github.com/sergiocorreia">sergiocorreia</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
+
               <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
@@ -101,6 +143,7 @@ $ git checkout gh-pages
             pageTracker._trackPageview();
             } catch(err) {}
           </script>
+
 
   </body>
 </html>
