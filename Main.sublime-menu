@@ -4,41 +4,34 @@
         "children":
         [
             {
-                "caption": "Packages",
-                "id": "packages",
+                "caption": "Stata",
                 "children":
                 [
                     {
-                        "caption": "Stata",
-                        "children":
-                        [
-                            {
-                                "caption": "Selection: Show Help on Stata",
-                                "command": "stata_help_external"
-                            },
-                            {
-                                "caption": "Selection: Show Help on Sublime Text",
-                                "command": "stata_help_internal"
-                            },
-                            {
-                                "caption": "Selection: Load Dataset",
-                                "command": "stata_load"
-                            },
-                            { "caption": "-" },
-                            {
-                                "caption": "Update Autocomplete File",
-                                "command": "stata_update_json"
-                            },
-                            { "caption": "-" },
-                            {
-                                "caption": "Change Stata Path",
-                                "command": "stata_update_executable_path"
-                            },
-                            {
-                                "caption": "Register Stata Automation",
-                                "command": "stata_register_automation"
-                            }
-                        ]
+                        "caption": "Selection: Show Help on Stata",
+                        "command": "stata_help_external"
+                    },
+                    {
+                        "caption": "Selection: Show Help on Sublime Text",
+                        "command": "stata_help_internal"
+                    },
+                    {
+                        "caption": "Selection: Load Dataset",
+                        "command": "stata_load"
+                    },
+                    { "caption": "-" },
+                    {
+                        "caption": "Update Autocomplete File",
+                        "command": "stata_update_json"
+                    },
+                    { "caption": "-" },
+                    {
+                        "caption": "Change Stata Path",
+                        "command": "stata_update_executable_path"
+                    },
+                    {
+                        "caption": "Register Stata Automation",
+                        "command": "stata_register_automation"
                     }
                 ]
             }
