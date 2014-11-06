@@ -280,6 +280,7 @@ def get_metadata(view):
 	ans = {}
 	for line in lines:
 		key,val = line.split(':', 1)
+		val = val.replace('"', "").replace("'", "")
 		key = key.strip()
 		# Allow dtapath instead of dtapaths
 		if key=='dtapath': key = 'dtapaths'
