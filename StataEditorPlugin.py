@@ -275,12 +275,11 @@ def get_cwd(view):
 
 def get_metadata(view):
 	buf = sublime.Region(0, view.size())
-	lines = (view.substr(line).strip() for line in view.split_by_newlines(buf))
+	lines = (view.substr(line).replace('"', '').strip() for line in view.split_by_newlines(buf))
 	lines = [line[2:].strip() for line in lines if line.startswith('*!')]
 	ans = {}
 	for line in lines:
 		key,val = line.split(':', 1)
-		val = val.replace('"', "").replace("'", "")
 		key = key.strip()
 		# Allow dtapath instead of dtapaths
 		if key=='dtapath': key = 'dtapaths'
