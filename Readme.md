@@ -1,6 +1,6 @@
 Stata Editor for Sublime Text 3
 ===============================
-Tutorial available at: [sergiocorreia.github.io/StataEditor/](sergiocorreia.github.io/StataEditor/)
+Tutorial available at: [http://sergiocorreia.github.io/StataEditor/](http://sergiocorreia.github.io/StataEditor/)
 
 Original work by [Mattias Nordin](http://sites.google.com/site/econnordin/)
 
