@@ -1,40 +1,45 @@
-<!DOCTYPE html>
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
 <html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Sublime Text Plugin: StataEditor : Sublime Text and Stata Integration">
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen">
+  <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+  <title>Sublime Text Plugin: StataEditor</title>
+  <meta name="description" content="Sublime Text and Stata Integration">
 
-    <title>Sublime Text Plugin: StataEditor</title>
-  </head>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <body>
+</head>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/sergiocorreia/StataEditor">View on GitHub</a>
+<body>
 
-          <h1 id="project_title">Sublime Text Plugin: StataEditor</h1>
-          <h2 id="project_tagline">Sublime Text and Stata Integration</h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/sergiocorreia/StataEditor/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/sergiocorreia/StataEditor/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h1>
+  <div class="wrapper">
+    <header>
+      <h1 class="title">Sublime Text Plugin: StataEditor</h1>
+    </header>
+    <div id="container">
+      <p class="tagline">Sublime Text and Stata Integration</p>
+      <div id="main" role="main">
+        <div class="download-bar">
+        <div class="inner">
+          <a href="https://github.com/sergiocorreia/StataEditor/tarball/master" class="download-button tar"><span>Download</span></a>
+          <a href="https://github.com/sergiocorreia/StataEditor/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/sergiocorreia/StataEditor" class="code">View Sublime Text Plugin: StataEditor on GitHub</a>
+        </div>
+        <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
+          <h1>
 <a id="sublime-text-and-stata-integration" class="anchor" href="#sublime-text-and-stata-integration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sublime Text and Stata Integration</h1>
 
-<p>StataEditor is a Sublime Text 3 plugin that integrates closely with Stata. It allows you to use Sublime Text's main features (syntax highlighting, autocompletion, snippets, build systems, goto symbols, etc.) interactively with Stata, so you can fully use the advantages Sublime's workflow in Stata.</p>
+<p>StataEditor is a Sublime Text 3 plugin that integrates closely with Stata. It allows you to use Sublime Text's main features (syntax highlighting, autocompletion, snippets, build systems, goto symbols, etc.) interactively with Stata, so you can fully take advantage of the  Sublime Text workflow in Stata.</p>
 
 <p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/ExampleLarge.png?raw=True" alt="Example"></p>
 
@@ -55,15 +60,13 @@
 <a id="installation-1" class="anchor" href="#installation-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h3>
 
 <ul>
-<li>Install <a href="https://sublime.wbond.net/installation">Package Control</a> if not installed</li>
+<li>Install <a href="https://sublime.wbond.net/installation">Package Control</a> if not installed.</li>
 <li>Install the Pywin32 package. Note: to install a package, go to the Command Palette in Sublime Text (ctrl+shift+p), type "install", type the package name, and select it.</li>
-<li>Add this repository: ctrl+shift+p, type "add repo", and enter <a href="https://github.com/sergiocorreia/StataEditor">https://github.com/sergiocorreia/StataEditor</a>
+<li>Add this Github repository. Press ctrl+shift+p, type "add repo", and enter <a href="https://github.com/sergiocorreia/StataEditor">https://github.com/sergiocorreia/StataEditor</a>
 </li>
 <li>Install the StataEditor package.</li>
-<li>
-<em>(Optional)</em> Set the Stata Path: ctrl+shift+p, type "stata path" (or use the Tools - Stata menu) and enter the path as seen in the image at the end. If this step is skipped, StataEditor will just try to find it, and ask if it fails.</li>
-<li>
-<em>(Optional)</em> Register the <em>Stata Automation type library</em>: ctrl+shift+p, "stata register", and accept the Windows Prompt. In case of an error, see the <a href="http://www.stata.com/automation/#createmsapp">manual instructions</a>. If this step is skipped, StataEditor will try to run it when required.</li>
+<li>(Optional) Set the Stata Path: ctrl+shift+p, type "stata path" (or use the Tools - Stata menu) and enter the path as seen in the image at the end. If this step is skipped, StataEditor will just try to find it, and ask if it fails.</li>
+<li>(Optional) Register the <em>Stata Automation type library</em>: ctrl+shift+p, "stata register", and accept the Windows Prompt. In case of an error, see the <a href="http://www.stata.com/automation/#createmsapp">manual instructions</a>. If this step is skipped, StataEditor will try to run it when required.</li>
 </ul>
 
 <p><img src="https://raw.githubusercontent.com/sergiocorreia/StataEditor/gh-pages/screenshots/set-path.png?raw=True" alt="Stata Path"></p>
@@ -134,7 +137,7 @@
 <a id="using-the-autocomplete-snippet" class="anchor" href="#using-the-autocomplete-snippet" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using the Autocomplete Snippet</h4>
 
 <ul>
-<li>Save the file if it is still untitled.</li>
+<li>Save the file if it is still Untitled.</li>
 <li>Use the "autocomplete" snippet ("auto", Tab) to insert the required comments.</li>
 </ul>
 
@@ -267,18 +270,27 @@
 <p>Thanks to Adrian Adermon and Daniel Forchheimer for helpful suggestions.</p>
 
 <p>Suggestions, code contributions, and pull requests <a href="mailto:sergio.correia@gmail.com">are greatly appreciated</a>!</p>
-      </section>
+        </article>
+      </div>
     </div>
+    <footer>
+      <div class="owner">
+      <p><a href="https://github.com/sergiocorreia" class="avatar"><img src="https://avatars3.githubusercontent.com/u/214056?v=2&amp;s=60" width="48" height="48"></a> <a href="https://github.com/sergiocorreia">sergiocorreia</a> maintains <a href="https://github.com/sergiocorreia/StataEditor">Sublime Text Plugin: StataEditor</a></p>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Sublime Text Plugin: StataEditor maintained by <a href="https://github.com/sergiocorreia">sergiocorreia</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
 
-              <script type="text/javascript">
+      </div>
+      <div class="creds">
+        <small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+      </div>
+    </footer>
+  </div>
+  <div class="current-section">
+    <a href="#top">Scroll to top</a>
+    <a href="https://github.com/sergiocorreia/StataEditor/tarball/master" class="tar">tar</a><a href="https://github.com/sergiocorreia/StataEditor/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <p class="name"></p>
+  </div>
+
+            <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
           </script>
@@ -289,6 +301,5 @@
             } catch(err) {}
           </script>
 
-
-  </body>
+</body>
 </html>
