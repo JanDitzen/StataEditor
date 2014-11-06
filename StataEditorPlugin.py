@@ -301,7 +301,7 @@ def get_autocomplete_data(view, force_update=False, add_from_buffer=True, obtain
 			
 	cwd = get_cwd(view)
 	if cwd is None:
-		return
+		return (None, None)
 		
 	metadata = get_metadata(view)
 	paths = metadata.get('dtapaths', [])
@@ -331,7 +331,11 @@ def get_autocomplete_data(view, force_update=False, add_from_buffer=True, obtain
 
 	# Get list of varnames
 	if obtain_varnames and autoupdate:
-		assert datasets # Bugbug
+		
+		#assert datasets # Bugbug
+		if not datasets:
+			sublime.error_message("No datasets found in the paths " + str(paths) )
+
 		if json_exists and not force_update:
 			last_updated = data['updated']
 			last_modified = max(os.path.getmtime(fn) for fn,_ in data['datasets'])
@@ -476,7 +480,8 @@ def launch_stata():
 def get_exe_path():
 	reg = winreg.ConnectRegistry(None,winreg.HKEY_CLASSES_ROOT)
 	subkeys = [r"Applications\StataMP64.exe\shell\open\command",
-	r"Applications\StataMP-64.exe\shell\open\command"]
+	r"Applications\StataMP-64.exe\shell\open\command",
+	r"Stata12Data\shell\open\command"]
 	key_found = False
 	for subkey in subkeys:
 		try:
