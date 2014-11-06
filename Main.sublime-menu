@@ -7,7 +7,7 @@
         [
             {
                 "caption": "Stata",
-                "id": "root",
+                "id": "stata",
                 "mnemonic": "S",
                 "children":
                 [
