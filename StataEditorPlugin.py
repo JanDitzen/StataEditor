@@ -285,8 +285,8 @@ def get_metadata(view):
 		if key=='dtapath': key = 'dtapaths'
 		if key not in ans:
 			ans[key] = [cell.strip() for cell in val.split(',')]
-		# Allow repeated 'dtapaths' tags
 		elif key=='dtapaths':
+			# Allow repeated 'dtapaths' tags
 			ans[key].extend(cell.strip() for cell in val.split(','))
 		else:
 			print("Warning - Repeated autocomplete key:", key)
