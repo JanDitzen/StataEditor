@@ -388,9 +388,11 @@ def get_dta_in_path(view, path):
 	cwd = get_cwd(view)
 	os.chdir(cwd)
 
-	nick = ''
 	if '=' in path:
 		nick, path = path.split('=', 1)
+	else:
+		nick = path
+	
 	if not os.path.isdir(path): return []
 	# full file path, file name used in stata ($; no .dta)
 	ans = [fn for fn in os.listdir(path) if fn.endswith('.dta')]
