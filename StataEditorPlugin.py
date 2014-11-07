@@ -442,9 +442,9 @@ def get_generates(view):
 	if settings.get("variable_completions") == True:
 		try:
 			varlist = sublime.stata.VariableNameArray()
+			ans.update(varlist)
 		except:
 			print("[Stata] Note: couldn't obtain varlist from current Stata window")
-	ans.update(varlist)
 
 	return list(ans)
 
