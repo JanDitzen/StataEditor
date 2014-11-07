@@ -111,22 +111,24 @@ class StataAutocompleteVarCommand(sublime_plugin.TextCommand):
 			return
 
 		if self.menu=='all':
-			link = self.suggestions[choice][0] + ' '
+			link = self.suggestions[choice][0]
 		elif self.menu=='filter':
-			link = self.suggestions[choice].strip(' *') + ' '
+			link = self.suggestions[choice].strip(' *')
 		else:
 			link = self.suggestions[choice][0]
 			self.run(None, menu='filter', filter_dta=link, prev_choice=0)
 			return
 
-		self.view.run_command("stata_insert", {'link':link})
+		self.view.run_command("stata_insert", {'link':link, 'leading_space':True})
 		
 		# Call again until the user presses Escape
 		self.run(None, menu=self.menu, filter_dta=self.filter_dta, prev_choice=choice)
 
 class StataInsert(sublime_plugin.TextCommand):
-	def run(self, edit, link):
+	def run(self, edit, link, leading_space=False):
 		startloc = self.view.sel()[-1].end()
+		if leading_space and self.view.substr(startloc-1)!=" ":
+			link = ' ' + link
 		self.view.insert(edit, startloc, link)
 
 class StataExecuteCommand(sublime_plugin.TextCommand):
@@ -478,7 +480,7 @@ def launch_stata():
 
 	try:
 		win32api.WinExec(stata_fn, win32con.SW_SHOWMINNOACTIVE)
-		sublime.stata = win32com.client.Dispatch ("stata.StataOLEApp")
+		sublime.stata = win32com.client.Dispatch("stata.StataOLEApp")
 	except:
 		sublime.run_command('stata_register_automation')
 		sublime.error_message("StataEditor: Stata Automation type library appears to be unregistered, see http://www.stata.com/automation/#install")
