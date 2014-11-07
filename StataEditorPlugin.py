@@ -127,7 +127,8 @@ class StataAutocompleteVarCommand(sublime_plugin.TextCommand):
 class StataInsert(sublime_plugin.TextCommand):
 	def run(self, edit, link, leading_space=False):
 		startloc = self.view.sel()[-1].end()
-		if leading_space and self.view.substr(startloc-1)!=" ":
+		if leading_space and startloc>0 and 
+		self.view.substr(startloc-1) not in (' ', '\t', '\r', '\n'):
 			link = ' ' + link
 		self.view.insert(edit, startloc, link)
 
